@@ -9,7 +9,7 @@ public class BishopMovesCalculator extends ChessMovesCalculator {
         super(teamColor);
     }
 
-    private void addMovesInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board) {
+    public void addMovesInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board) {
         int newRow = row + rowIncrement;
         int newColumn = column + colIncrement;
         if (newRow <1 || newRow > 8 || newColumn < 1 || newColumn > 8) {
