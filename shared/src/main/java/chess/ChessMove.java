@@ -11,12 +11,14 @@ import java.util.Objects;
 public class ChessMove {
     ChessPosition startPosition;
     ChessPosition endPosition;
+    ChessPiece.PieceType promotionType;
 
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
+        this.promotionType = promotionPiece;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class ChessMove {
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        throw new RuntimeException("Not implemented");
+        return endPosition;
     }
 
     /**
@@ -59,6 +61,6 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return promotionType;
     }
 }
