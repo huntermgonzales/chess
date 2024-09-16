@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class BishopMovesCalculator extends ChessMovesCalculator {
-    public BishopMovesCalculator(ChessGame.TeamColor teamColor) {
+public class RookMovesCalculator  extends ChessMovesCalculator {
+
+    public RookMovesCalculator(ChessGame.TeamColor teamColor) {
         super(teamColor);
     }
 
+    @Override
     public void addMovesInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board) {
         int newRow = row + rowIncrement;
         int newColumn = column + colIncrement;
@@ -16,9 +18,10 @@ public class BishopMovesCalculator extends ChessMovesCalculator {
             return;
         }
 
+        //piece is blocked if the same team color is on the square currently on
+
         // Continue moving in the direction as long as within the bounds
         while (newRow >= 1 && newRow <= 8 && newColumn >= 1 && newColumn <= 8) {
-            //piece is blocked if the same team color is on the square currently on
             ChessPosition newPosition = new ChessPosition(newRow, newColumn);
             ChessPiece pieceOnSquare = board.getPiece(newPosition);
             if (pieceOnSquare != null && pieceOnSquare.getTeamColor() == teamColor) {
@@ -26,7 +29,7 @@ public class BishopMovesCalculator extends ChessMovesCalculator {
             }
             ChessMove newMove = new ChessMove(myPosition, newPosition, null);
             moves.add(newMove);
-            System.out.println(newMove); //debug
+//            System.out.println(newMove); //debug
             //piece can not continue past this square if opposite team is on current square (it is captured)
             pieceOnSquare = board.getPiece(newPosition);
             if (pieceOnSquare != null && pieceOnSquare.getTeamColor() != teamColor) {
@@ -43,10 +46,13 @@ public class BishopMovesCalculator extends ChessMovesCalculator {
         int row = myPosition.getRow();
         int column = myPosition.getColumn();
         List<ChessMove> moves = new ArrayList<>();
-        addMovesInDirection(moves, myPosition, row, column, 1, 1, board); //positive positive
-        addMovesInDirection(moves, myPosition, row, column, -1, -1, board); //negative negative
-        addMovesInDirection(moves, myPosition, row, column, 1, -1, board); //positive negative
-        addMovesInDirection(moves, myPosition, row, column, -1, 1, board); //negative positive
+        addMovesInDirection(moves, myPosition, row, column, 1, 0, board);
+        addMovesInDirection(moves, myPosition, row, column, -1, 0, board);
+        addMovesInDirection(moves, myPosition, row, column, 0, 1, board);
+        addMovesInDirection(moves, myPosition, row, column, 0, -1, board);
+
+
+
         return moves;
     }
 }

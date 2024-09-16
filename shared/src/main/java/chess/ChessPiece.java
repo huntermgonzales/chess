@@ -89,7 +89,9 @@ public class ChessPiece {
                 moves = KingMoves.calculatePossibleMoves(board, myPosition);
                 break;
             case ROOK:
-                return null;
+                RookMovesCalculator RookMoves = new RookMovesCalculator(pieceColor);
+                moves = RookMoves.calculatePossibleMoves(board, myPosition);
+                break;
             default:
                 return null;
         }
