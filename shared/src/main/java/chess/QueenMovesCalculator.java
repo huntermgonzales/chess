@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class BishopMovesCalculator extends ChessMovesCalculator {
-    public BishopMovesCalculator(ChessGame.TeamColor teamColor) {
+public class QueenMovesCalculator extends ChessMovesCalculator {
+
+    public QueenMovesCalculator(ChessGame.TeamColor teamColor) {
         super(teamColor);
     }
 
+    @Override
     public void addMovesInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board) {
         int newRow = row + rowIncrement;
         int newColumn = column + colIncrement;
@@ -46,6 +48,10 @@ public class BishopMovesCalculator extends ChessMovesCalculator {
         addMovesInDirection(moves, myPosition, row, column, -1, -1, board); //negative negative
         addMovesInDirection(moves, myPosition, row, column, 1, -1, board); //positive negative
         addMovesInDirection(moves, myPosition, row, column, -1, 1, board); //negative positive
+        addMovesInDirection(moves, myPosition, row, column, 1, 0, board);
+        addMovesInDirection(moves, myPosition, row, column, -1, 0, board);
+        addMovesInDirection(moves, myPosition, row, column, 0, 1, board);
+        addMovesInDirection(moves, myPosition, row, column, 0, -1, board);
         return moves;
     }
 }

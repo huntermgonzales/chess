@@ -83,7 +83,9 @@ public class ChessPiece {
             case PAWN:
                 return null;
             case PieceType.QUEEN:
-                return null;
+                QueenMovesCalculator QueenMoves = new QueenMovesCalculator(pieceColor);
+                moves = QueenMoves.calculatePossibleMoves(board, myPosition);
+                break;
             case KING:
                 KingMovesCalculator KingMoves = new KingMovesCalculator(pieceColor);
                 moves = KingMoves.calculatePossibleMoves(board, myPosition);
