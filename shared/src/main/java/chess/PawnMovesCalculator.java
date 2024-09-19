@@ -34,8 +34,19 @@ public class PawnMovesCalculator extends ChessMovesCalculator {
         } else if (pieceOnSquare == null || pieceOnSquare.getTeamColor() == teamColor) {
                 return;
         }
-        ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-        moves.add(newMove);
+        if (newPosition.getRow() == 8 || newPosition.getRow() == 1) {
+            ChessMove newMove = new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN);
+            moves.add(newMove);
+            newMove = new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP);
+            moves.add(newMove);
+            newMove = new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK);
+            moves.add(newMove);
+            newMove = new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT);
+            moves.add(newMove);
+        } else {
+            ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+            moves.add(newMove);
+        }
 //        System.out.println(newMove); //debug
     }
 
