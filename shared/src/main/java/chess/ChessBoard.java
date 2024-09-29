@@ -1,8 +1,10 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
+import static chess.ChessPiece.PieceType.KING;
 import static chess.ChessPiece.PieceType.PAWN;
 
 /**
@@ -36,12 +38,40 @@ public class ChessBoard {
         return Arrays.deepHashCode(squares);
     }
 
+    public void removePiece(ChessPosition position) {
+        squares[position.getRow() - 1][position.getColumn() - 1] = null;
+    }
+
+
+
+
+    //(squares[i][j].getPieceType() == KING && squares[i][j].getTeamColor() != color)
+    //This function will return whether the king of the team who's turn it is is currently being attacked
+    //(this means it cant make that move)
+    public boolean isCurrentKingAttacked(ChessGame.TeamColor color) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (squares[i][j] != null && squares[i][j].getTeamColor() != color) {
+                    Collection<ChessMove> moves = squares[i][j].pieceMoves(this, new ChessPosition(i + 1,j + 1));
+                    for (ChessMove move : moves) {
+                        ChessPiece piece = squares[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1];
+                        if (piece != null && piece.getPieceType() == KING) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
     /**
      * Adds a chess piece to the chessboard
      *
      * @param position where to add the piece to
      * @param piece    the piece to add
      */
+
     public void addPiece(ChessPosition position, ChessPiece piece) {
         squares[position.getRow() - 1][position.getColumn() - 1] = piece;
     }
