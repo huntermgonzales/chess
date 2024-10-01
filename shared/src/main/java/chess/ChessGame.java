@@ -47,11 +47,16 @@ public class ChessGame {
     private boolean checkMove(ChessMove move) {
         ChessPiece piece = board.getPiece(move.getStartPosition());
         board.removePiece(move.getStartPosition());
+        ChessPiece tempPiece = null;
+        if (board.getPiece(move.getEndPosition()) != null) {
+            tempPiece = board.getPiece(move.getEndPosition());
+        }
         board.addPiece(move.getEndPosition(), piece);
 
         boolean attacked = board.isCurrentKingAttacked(piece.getTeamColor());
 
         board.removePiece(move.getEndPosition());
+        board.addPiece(move.getEndPosition(), tempPiece);
         board.addPiece(move.getStartPosition(), piece);
         return attacked;
     }
