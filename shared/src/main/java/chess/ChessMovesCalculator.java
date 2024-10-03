@@ -14,7 +14,7 @@ public abstract class ChessMovesCalculator {
 
 
     //the pawnMovesCalculator will overwrite this function
-    public void addMovesInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board){
+    protected void addMovesInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board){
         int newRow = myPosition.getRow() + rowIncrement;
         int newCol = myPosition.getColumn() + colIncrement;
         while (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
@@ -33,7 +33,7 @@ public abstract class ChessMovesCalculator {
         }
     }
 
-    public void addMovesOnceInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board) {
+    protected void addMovesOnceInDirection(List<ChessMove> moves, ChessPosition myPosition, int row, int column, int rowIncrement, int colIncrement, ChessBoard board) {
         int newRow = myPosition.getRow() + rowIncrement;
         int newCol = myPosition.getColumn() + colIncrement;
         if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
