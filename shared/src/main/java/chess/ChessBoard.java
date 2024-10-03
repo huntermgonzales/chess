@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
@@ -44,6 +45,17 @@ public class ChessBoard {
 
 
 
+    public Collection<ChessPosition> getPiecesOfColor(ChessGame.TeamColor color) {
+        Collection<ChessPosition> positions = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (squares[i][j] != null && squares[i][j].getTeamColor() == color) {
+                    positions.add(new ChessPosition(-1, j - 1));
+                }
+            }
+        }
+        return positions;
+    }
 
     //(squares[i][j].getPieceType() == KING && squares[i][j].getTeamColor() != color)
     //This function will return whether the king of the team who's turn it is is currently being attacked
