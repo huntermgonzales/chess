@@ -10,7 +10,7 @@ import java.util.Iterator;
  * signature of the existing methods.
  */
 public class ChessGame {
-    ChessBoard board;
+    ChessBoard board = new ChessBoard();
     TeamColor teamTurn = TeamColor.WHITE;
 
     public ChessGame() {
@@ -88,9 +88,13 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null) {
+            throw new InvalidMoveException();
+        }
         Collection<ChessMove> possibleMoves = validMoves(move.getStartPosition());
         if (possibleMoves.contains(move)) {
-            ChessPiece piece = board.getPiece(move.getStartPosition());
+
             board.removePiece(move.getStartPosition());
             board.addPiece(move.getEndPosition(), piece);
         } else {
