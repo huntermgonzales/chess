@@ -93,12 +93,14 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         Collection<ChessMove> possibleMoves = validMoves(move.getStartPosition());
-        if (possibleMoves.contains(move)) {
-
-            board.removePiece(move.getStartPosition());
-            board.addPiece(move.getEndPosition(), piece);
-        } else {
+        if (!possibleMoves.contains(move)) {
             throw new InvalidMoveException();
+        } else {
+            board.removePiece(move.getStartPosition());
+            if (move.getPromotionPiece() != null) {
+                piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+            }
+            board.addPiece(move.getEndPosition(), piece);
         }
     }
 

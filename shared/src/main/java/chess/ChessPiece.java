@@ -14,8 +14,8 @@ import static chess.ChessPiece.PieceType.*;
  */
 public class ChessPiece {
 
-    ChessGame.TeamColor pieceColor;
-    PieceType type;
+    private ChessGame.TeamColor pieceColor;
+    private PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
