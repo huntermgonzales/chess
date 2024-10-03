@@ -123,6 +123,9 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         Collection<ChessPosition> positions = board.getPiecesOfColor(teamColor);
+        if (positions.isEmpty()) {
+            return false;
+        }
         Collection<ChessMove> moves;
         for (ChessPosition positionOfPiece : positions) {
             moves = validMoves(positionOfPiece);
