@@ -82,6 +82,14 @@ public class ChessGame {
         return moves;
     }
 
+    private void changeTurn() {
+        if (teamTurn == TeamColor.WHITE) {
+            teamTurn = TeamColor.BLACK;
+        } else {
+            teamTurn = TeamColor.WHITE;
+        }
+    }
+
     /**
      * Makes a move in a chess game
      *
@@ -90,19 +98,19 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getStartPosition());
-        if (piece == null) {
+        if (piece == null || piece.getTeamColor() != teamTurn) {
             throw new InvalidMoveException();
         }
         Collection<ChessMove> possibleMoves = validMoves(move.getStartPosition());
         if (!possibleMoves.contains(move)) {
             throw new InvalidMoveException();
-        } else {
-            board.removePiece(move.getStartPosition());
-            if (move.getPromotionPiece() != null) {
-                piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
-            }
-            board.addPiece(move.getEndPosition(), piece);
         }
+        board.removePiece(move.getStartPosition());
+        if (move.getPromotionPiece() != null) {
+            piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+        }
+        board.addPiece(move.getEndPosition(), piece);
+        changeTurn();
     }
 
     /**
