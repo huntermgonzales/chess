@@ -4,7 +4,9 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LocalMemory {
@@ -49,6 +51,12 @@ public class LocalMemory {
 
     public GameData getGameData(int gameID) {
         return gameDataMap.get(gameID);
+    }
+
+    public List<GameData> getAllGames() {
+        List<GameData> games = new ArrayList<>();
+        games.addAll(gameDataMap.values());
+        return games;
     }
 
     public void deleteAllGameData() {

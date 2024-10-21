@@ -10,14 +10,16 @@ public abstract class Service {
     LocalMemory localMemory;
     UserDAO userDAO;
     AuthDAO authDAO;
+    GameDAO gameDAO;
 
     public Service(LocalMemory localMemory) {
         this.localMemory = localMemory;
         this.userDAO = new MemoryUserDAO(localMemory);
         this.authDAO = new MemoryAuthDAO(localMemory);
+        this.gameDAO = new MemoryGameDAO(localMemory);
     }
 
-    public AuthData createAuthData(String username) throws DataAccessException {
+    protected AuthData createAuthData(String username) throws DataAccessException {
 
         if (localMemory.getUserData(username) == null) {
             throw new DataAccessException("Error: unauthorized");
@@ -26,7 +28,7 @@ public abstract class Service {
         return new AuthData(authToken, username);
     }
 
-    public AuthData authorize(String authToken) throws DataAccessException {
+    protected AuthData authorize(String authToken) throws DataAccessException {
         if (authDAO.getAuthData(authToken) == null) {
             throw new DataAccessException("Error: unauthorized");
         }

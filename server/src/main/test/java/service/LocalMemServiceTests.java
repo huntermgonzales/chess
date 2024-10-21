@@ -1,13 +1,14 @@
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.LoginService;
-import service.LogoutService;
-import service.RegisterService;
+import service.*;
+
+import java.util.List;
 
 public class LocalMemServiceTests {
 
@@ -93,5 +94,44 @@ public class LocalMemServiceTests {
         Assertions.assertThrows(DataAccessException.class, () -> {
             logoutService.logout(authData.authToken());
         });
+    }
+
+    @Test
+    void CreateGameUnauthorizedUser() {
+        CreateGameService gameService = new CreateGameService(localMemory);
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            gameService.createGame("not a real token", "myGame");
+        });
+    }
+
+    @Test
+    void CreateGameSuccess() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        CreateGameService createGameService = new CreateGameService(localMemory);
+        AuthData authData = registerService.register("username", "password", "email");
+        createGameService.createGame(authData.authToken(), "newGame");
+    }
+
+    @Test
+    void ListGamesUnauthorizedUser() {
+        ListGameService listGameService = new ListGameService(localMemory);
+        Assertions.assertThrows(DataAccessException.class, () -> {
+           listGameService.listGames("not a real token");
+        });
+    }
+
+    @Test
+    void List5Games() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        CreateGameService createGameService = new CreateGameService(localMemory);
+        ListGameService listGameService = new ListGameService(localMemory);
+        AuthData authData = registerService.register("username", "password", "email");
+        createGameService.createGame(authData.authToken(), "Game1");
+        createGameService.createGame(authData.authToken(), "Game2");
+        createGameService.createGame(authData.authToken(), "Game3");
+        createGameService.createGame(authData.authToken(), "Game4");
+        createGameService.createGame(authData.authToken(), "Game5");
+        List<GameData> games= listGameService.listGames(authData.authToken());
+        Assertions.assertEquals(5, games.size());
     }
 }
