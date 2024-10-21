@@ -47,7 +47,23 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void loginInvalidPassword() {
+    void loginInvalidPassword() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        LoginService loginService = new LoginService(localMemory);
+        registerService.register("username", "password", "email");
+        Assertions.assertThrows(DataAccessException.class, () ->{
+            loginService.login("username", "wrongPassword");
+        });
+    }
+
+    @Test
+    void loginSuccess() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        LoginService loginService = new LoginService(localMemory);
+        registerService.register("username", "password", "email");
+        Assertions.assertDoesNotThrow(() ->{
+            loginService.login("username", "password");
+        });
     }
 
     @Test

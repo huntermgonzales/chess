@@ -10,10 +10,7 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public void addUser(UserData userData) throws DataAccessException {
-        if (localMemory.getUserData(userData.username()) != null){
-            throw new DataAccessException("user already taken");
-        }
+    public void addUser(UserData userData) {
         localMemory.createUserData(userData);
     }
 
