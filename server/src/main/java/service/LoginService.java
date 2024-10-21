@@ -6,22 +6,25 @@ import model.UserData;
 
 import java.util.UUID;
 
-public class LoginService {
-    LocalMemory localMemory = new LocalMemory();
+public class LoginService extends Service{
+
     public LoginService(LocalMemory localMemory) {
-        this.localMemory = localMemory;
+        super(localMemory);
     }
 
-    public void login(String username, String password) throws DataAccessException {
-        UserDAO userDAO = new MemoryUserDAO(localMemory);
-        UserData userData = userDAO.getUserData(username);
-    }
-
-    public AuthData createAuthData(String username) throws DataAccessException {
-        if (localMemory.getUserData(username) == null) {
-            throw new DataAccessException("user does not exist");
+    public AuthData login(String username, String password) throws DataAccessException {
+        if (userDAO.getUserData(username) == null) {
+            throw new DataAccessException("Error: unauthorized");
         }
-        String authToken = UUID.randomUUID().toString();
-        return new AuthData(authToken, username);
+        UserData userData = userDAO.getUserData(username);
+        if (userData.password() != password) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+        AuthData authData = createAuthData(username);
+        authDAO.addAuthData(authData);
+        return authData;
+
     }
+
+
 }

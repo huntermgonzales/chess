@@ -20,13 +20,12 @@ public class MemoryUserDAO implements UserDAO{
     @Override
     public UserData getUserData(String username) throws DataAccessException {
         if (localMemory.getUserData((username)) == null){
-            throw new DataAccessException("user does not exist");
+            return null;
         }
         return localMemory.getUserData(username);
     }
 
     @Override
     public void deleteAll() {
-
     }
 }
