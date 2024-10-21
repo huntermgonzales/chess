@@ -13,7 +13,7 @@ public class LocalMemory {
     private Map<Integer, GameData> gameDataMap = new HashMap<>(); //int gameID is key
 
     public void createAuthData(AuthData authData) {
-        authDataMap.put(authData.username(), authData);
+        authDataMap.put(authData.authToken(), authData);
     }
 
     public AuthData getAuthData(String authToken) {

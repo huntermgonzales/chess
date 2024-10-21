@@ -15,7 +15,6 @@ public abstract class Service {
         this.localMemory = localMemory;
         this.userDAO = new MemoryUserDAO(localMemory);
         this.authDAO = new MemoryAuthDAO(localMemory);
-
     }
 
     public AuthData createAuthData(String username) throws DataAccessException {
@@ -25,5 +24,12 @@ public abstract class Service {
         }
         String authToken = UUID.randomUUID().toString();
         return new AuthData(authToken, username);
+    }
+
+    public AuthData authorize(String authToken) throws DataAccessException {
+        if (authDAO.getAuthData(authToken) == null) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+        return authDAO.getAuthData(authToken);
     }
 }

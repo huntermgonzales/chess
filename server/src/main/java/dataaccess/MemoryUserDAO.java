@@ -15,7 +15,7 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public UserData getUserData(String username) throws DataAccessException {
+    public UserData getUserData(String username) {
         if (localMemory.getUserData((username)) == null){
             return null;
         }
@@ -24,5 +24,6 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public void deleteAll() {
+        localMemory.deleteAllUserData();
     }
 }

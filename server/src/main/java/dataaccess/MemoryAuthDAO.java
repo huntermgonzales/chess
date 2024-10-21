@@ -9,26 +9,21 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void deleteAuthData(String authToken) throws DataAccessException{
-        if (localMemory.getAuthData(authToken) == null){
-            throw new DataAccessException("Auth Data does not exist");
-        }
+    public void deleteAuthData(String authToken) {
+
         localMemory.deleteAuthData(authToken);
     }
 
     @Override
-    public AuthData getAuthData(String authToken) throws DataAccessException {
+    public AuthData getAuthData(String authToken) {
         if (localMemory.getAuthData(authToken) == null){
-            throw new DataAccessException("Auth Data does not exist");
+            return null;
         }
         return localMemory.getAuthData(authToken);
     }
 
     @Override
-    public void addAuthData(AuthData authData) throws DataAccessException {
-        if (localMemory.getAuthData(authData.authToken()) != null){
-            throw new DataAccessException("Auth Data already exists");
-        }
+    public void addAuthData(AuthData authData) {
         localMemory.createAuthData(authData);
     }
 

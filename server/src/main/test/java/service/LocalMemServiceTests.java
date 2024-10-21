@@ -1,10 +1,12 @@
 import dataaccess.*;
+import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.LoginService;
+import service.LogoutService;
 import service.RegisterService;
 
 public class LocalMemServiceTests {
@@ -47,7 +49,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void loginInvalidPassword() throws DataAccessException {
+    public void loginInvalidPassword() throws DataAccessException {
         RegisterService registerService = new RegisterService(localMemory);
         LoginService loginService = new LoginService(localMemory);
         registerService.register("username", "password", "email");
@@ -57,7 +59,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void loginSuccess() throws DataAccessException {
+    public void loginSuccess() throws DataAccessException {
         RegisterService registerService = new RegisterService(localMemory);
         LoginService loginService = new LoginService(localMemory);
         registerService.register("username", "password", "email");
@@ -67,20 +69,29 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void addAuthDataUserNoExist() {
-        LoginService loginService = new LoginService(localMemory);
+    public void logoutInvalid() throws DataAccessException {
+        LogoutService logoutService = new LogoutService(localMemory);
         Assertions.assertThrows(DataAccessException.class, () -> {
-            loginService.createAuthData("unusedUsername");
+            logoutService.logout("notValidAuthToken");
         });
     }
 
     @Test
-    void addAuthDataUserExists() {
-        LoginService loginService = new LoginService(localMemory);
-        UserData userData = new UserData("newUsername", "password", "email");
-        localMemory.createUserData(userData);
-        Assertions.assertDoesNotThrow(() -> {
-            loginService.createAuthData("newUsername");
+    void logoutSuccess() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        LogoutService logoutService = new LogoutService(localMemory);
+        AuthData authData = registerService.register("myUsername", "password", "email");
+        logoutService.logout(authData.authToken());
+    }
+
+    @Test
+    void logoutCannotLogoutTwice() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        LogoutService logoutService = new LogoutService(localMemory);
+        AuthData authData = registerService.register("myUsername", "password", "email");
+        logoutService.logout(authData.authToken());
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            logoutService.logout(authData.authToken());
         });
     }
 }
