@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
+import requests.LoginRequest;
 
 import java.util.UUID;
 
@@ -12,15 +13,15 @@ public class LoginService extends Service{
         super(localMemory);
     }
 
-    public AuthData login(String username, String password) throws DataAccessException {
-        if (userDAO.getUserData(username) == null) {
+    public AuthData login(LoginRequest request) throws DataAccessException {
+        if (userDAO.getUserData(request.username()) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        UserData userData = userDAO.getUserData(username);
-        if (userData.password() != password) {
+        UserData userData = userDAO.getUserData(request.username());
+        if (userData.password() != request.password()) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        AuthData authData = createAuthData(username);
+        AuthData authData = createAuthData(request.username());
         authDAO.addAuthData(authData);
         return authData;
 

@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
+import requests.RegisterRequest;
 
 public class RegisterService extends Service {
 
@@ -10,13 +11,13 @@ public class RegisterService extends Service {
         super(localMemory);
     }
 
-    public AuthData register(String username, String password, String email) throws DataAccessException {
-        if (userDAO.getUserData(username) != null) {
+    public AuthData register(RegisterRequest request) throws DataAccessException {
+        if (userDAO.getUserData(request.username()) != null) {
             throw new AlreadyTakenException("Error: already taken");
         }
-        UserData userData = new UserData(username, password, email);
+        UserData userData = new UserData(request.username(), request.password(), request.email());
         userDAO.addUser(userData);
-        AuthData authData = createAuthData(username);
+        AuthData authData = createAuthData(request.username());
         authDAO.addAuthData(authData);
         return authData;
     }

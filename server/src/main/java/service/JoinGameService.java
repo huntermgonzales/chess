@@ -7,6 +7,7 @@ import dataaccess.DataAccessException;
 import dataaccess.LocalMemory;
 import model.AuthData;
 import model.GameData;
+import requests.JoinGameRequest;
 
 public class JoinGameService extends Service{
     public JoinGameService(LocalMemory localMemory) {
@@ -29,13 +30,13 @@ public class JoinGameService extends Service{
         return newGameData;
     }
 
-    public void joinGame(String authToken, ChessGame.TeamColor playerColor, int gameID) throws DataAccessException {
-        AuthData authData = authorize(authToken);
-        if (gameDAO.getGame(gameID) == null) {
+    public void joinGame(JoinGameRequest request) throws DataAccessException {
+        AuthData authData = authorize(request.authToken());
+        if (gameDAO.getGame(request.gameID()) == null) {
             throw new BadRequestException("Error: bad request");
         }
-        GameData gameData = gameDAO.getGame(gameID);
-        gameData = addPlayer(playerColor, gameData, authData);
+        GameData gameData = gameDAO.getGame(request.gameID());
+        gameData = addPlayer(request.playerColor(), gameData, authData);
         gameDAO.updateGameData(gameData);
     }
 

@@ -4,6 +4,7 @@ import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.LocalMemory;
 import model.GameData;
+import requests.CreateGameRequest;
 
 public class CreateGameService extends Service{
 
@@ -13,11 +14,11 @@ public class CreateGameService extends Service{
         super(localMemory);
     }
 
-    public int createGame(String authToken, String gameName) throws DataAccessException {
-        authorize(authToken);
+    public int createGame(CreateGameRequest createGameRequest) throws DataAccessException {
+        authorize(createGameRequest.authToken());
         currentGameID++;
         int gameID = currentGameID;
-        GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
+        GameData newGame = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.addGame(newGame);
         return currentGameID;
     }
