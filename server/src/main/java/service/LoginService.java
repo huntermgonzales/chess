@@ -1,5 +1,6 @@
 package service;
 
+import Results.LoginResult;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
@@ -10,7 +11,7 @@ import java.util.UUID;
 public class LoginService extends Service{
 
 
-    public AuthData login(LoginRequest request) throws DataAccessException {
+    public LoginResult login(LoginRequest request) throws DataAccessException {
         if (userDAO.getUserData(request.username()) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
@@ -20,7 +21,7 @@ public class LoginService extends Service{
         }
         AuthData authData = createAuthData(request.username());
         authDAO.addAuthData(authData);
-        return authData;
+        return new LoginResult(authData.username(), authData.authToken());
 
     }
 

@@ -1,5 +1,6 @@
 package service;
 
+import Results.CreateGameResult;
 import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.LocalMemory;
@@ -11,12 +12,12 @@ public class CreateGameService extends Service{
     private int currentGameID = 0;
 
 
-    public int createGame(CreateGameRequest createGameRequest) throws DataAccessException {
+    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException {
         authorize(createGameRequest.authToken());
         currentGameID++;
         int gameID = currentGameID;
         GameData newGame = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.addGame(newGame);
-        return currentGameID;
+        return new CreateGameResult(currentGameID);
     }
 }

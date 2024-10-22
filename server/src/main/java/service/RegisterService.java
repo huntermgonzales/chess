@@ -1,5 +1,6 @@
 package service;
 
+import Results.RegisterResult;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
@@ -7,7 +8,7 @@ import requests.RegisterRequest;
 
 public class RegisterService extends Service {
 
-    public AuthData register(RegisterRequest request) throws DataAccessException {
+    public RegisterResult register(RegisterRequest request) throws DataAccessException {
         if (userDAO.getUserData(request.username()) != null) {
             throw new AlreadyTakenException("Error: already taken");
         }
@@ -15,6 +16,6 @@ public class RegisterService extends Service {
         userDAO.addUser(userData);
         AuthData authData = createAuthData(request.username());
         authDAO.addAuthData(authData);
-        return authData;
+        return new RegisterResult(authData.username(), authData.authToken());
     }
 }
