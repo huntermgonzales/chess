@@ -17,9 +17,7 @@ public class LocalMemServiceTests {
 
     @BeforeEach
     void beforeEach() {
-        localMemory.deleteAllAuthData();
-        localMemory.deleteAllGameData();
-        localMemory.deleteAllUserData();
+        new ClearService(localMemory).clearAll();
     }
 
     @Test
@@ -182,5 +180,13 @@ public class LocalMemServiceTests {
         Assertions.assertThrows(BadRequestException.class, () -> {
             joinGameService.joinGame(authData.authToken(), ChessGame.TeamColor.BLACK, 2);
         });
+    }
+
+    @Test
+    void ClearAll() throws DataAccessException {
+        JoinGameSuccess();
+        ClearService clearService = new ClearService(localMemory);
+        clearService.clearAll();
+
     }
 }
