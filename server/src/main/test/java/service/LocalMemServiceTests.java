@@ -1,3 +1,4 @@
+import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
@@ -133,5 +134,53 @@ public class LocalMemServiceTests {
         createGameService.createGame(authData.authToken(), "Game5");
         List<GameData> games= listGameService.listGames(authData.authToken());
         Assertions.assertEquals(5, games.size());
+    }
+
+    @Test
+    void JoinGameSuccess() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        CreateGameService createGameService = new CreateGameService(localMemory);
+        JoinGameService joinGameService = new JoinGameService(localMemory);
+        AuthData authData = registerService.register("username", "password", "email");
+        createGameService.createGame(authData.authToken(), "Game1");
+        joinGameService.joinGame(authData.authToken(), ChessGame.TeamColor.BLACK, 1);
+    }
+
+    @Test
+    void JoinGameUnauthorized() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        CreateGameService createGameService = new CreateGameService(localMemory);
+        JoinGameService joinGameService = new JoinGameService(localMemory);
+        AuthData authData = registerService.register("username", "password", "email");
+        createGameService.createGame(authData.authToken(), "Game1");
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            joinGameService.joinGame("not a real authToken", ChessGame.TeamColor.BLACK, 1);
+        });
+    }
+
+    @Test
+    void JoinGameAddSameColorTwice() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        CreateGameService createGameService = new CreateGameService(localMemory);
+        JoinGameService joinGameService = new JoinGameService(localMemory);
+        AuthData authData1 = registerService.register("username1", "password", "email");
+        AuthData authData2 = registerService.register("username2", "password", "email");
+        createGameService.createGame(authData1.authToken(), "Game1");
+        joinGameService.joinGame(authData1.authToken(), ChessGame.TeamColor.BLACK, 1);
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            joinGameService.joinGame(authData2.authToken(), ChessGame.TeamColor.BLACK, 1);
+        });
+    }
+
+    @Test
+    void JoinGameGameDoesNotExist() throws DataAccessException {
+        RegisterService registerService = new RegisterService(localMemory);
+        CreateGameService createGameService = new CreateGameService(localMemory);
+        JoinGameService joinGameService = new JoinGameService(localMemory);
+        AuthData authData = registerService.register("username", "password", "email");
+        createGameService.createGame(authData.authToken(), "Game1");
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            joinGameService.joinGame(authData.authToken(), ChessGame.TeamColor.BLACK, 2);
+        });
     }
 }

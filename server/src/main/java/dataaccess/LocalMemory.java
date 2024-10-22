@@ -58,6 +58,10 @@ public class LocalMemory {
         games.addAll(gameDataMap.values());
         return games;
     }
+    public void updateGameData(GameData gameData) {
+        gameDataMap.remove(gameData.gameID());
+        gameDataMap.put(gameData.gameID(), gameData);
+    }
 
     public void deleteAllGameData() {
         gameDataMap.clear();

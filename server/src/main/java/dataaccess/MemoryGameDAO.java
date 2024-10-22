@@ -22,6 +22,16 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
+    public GameData getGame(int gameID) {
+        return localMemory.getGameData(gameID);
+    }
+
+    @Override
+    public void updateGameData(GameData gameData) {
+        localMemory.updateGameData(gameData);
+    }
+
+    @Override
     public void deleteAll() {
         localMemory.deleteAllGameData();
     }
