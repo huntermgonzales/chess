@@ -6,6 +6,7 @@ import model.AuthData;
 import model.UserData;
 import requests.LoginRequest;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class LoginService extends Service{
@@ -16,7 +17,7 @@ public class LoginService extends Service{
             throw new UnauthorizedException("Error: unauthorized");
         }
         UserData userData = userDAO.getUserData(request.username());
-        if (userData.password() != request.password()) {
+        if (!Objects.equals(userData.password(), request.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
         AuthData authData = createAuthData(request.username());

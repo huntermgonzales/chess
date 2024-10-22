@@ -10,24 +10,29 @@ import dataaccess.UnauthorizedException;
 import requests.LoginRequest;
 import requests.LoginRequest;
 import service.LoginService;
+import spark.Request;
+import spark.Response;
 
 public class LoginHandler {
 
-    public String handleLogin(String json) {
+    public Object handleLogin(Request req, Response res) {
         String resultJson;
         Gson serializer = new Gson();
         try {
-            var loginRequest = serializer.fromJson(json, LoginRequest.class);
+            var loginRequest = serializer.fromJson(req.body(), LoginRequest.class);
             LoginService loginService = new LoginService();
             LoginResult result = loginService.login(loginRequest);
             resultJson = serializer.toJson(result);
+            res.status(200);
         } catch (
                 DataAccessException e) {
             ErrorResult result;
             if (e.getClass() == UnauthorizedException.class) {
                 result = new ErrorResult("Error: unauthorized");
+                res.status(401);
             } else {
                 result = new ErrorResult("Error: data access error");
+                res.status(500);
             }
             resultJson = serializer.toJson(result);
         }

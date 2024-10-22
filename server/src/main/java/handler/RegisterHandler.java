@@ -13,7 +13,7 @@ import spark.Response;
 
 public class RegisterHandler {
 
-    public Object register(Request req, Response res) {
+    public Object handleRegister(Request req, Response res) {
         String resultJson;
         var serializer = new Gson();
         try {
