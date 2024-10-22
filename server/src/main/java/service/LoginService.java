@@ -14,11 +14,11 @@ public class LoginService extends Service{
 
     public AuthData login(String username, String password) throws DataAccessException {
         if (userDAO.getUserData(username) == null) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new UnauthorizedException("Error: unauthorized");
         }
         UserData userData = userDAO.getUserData(username);
         if (userData.password() != password) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new UnauthorizedException("Error: unauthorized");
         }
         AuthData authData = createAuthData(username);
         authDAO.addAuthData(authData);

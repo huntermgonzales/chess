@@ -1,6 +1,8 @@
 package service;
 
 import chess.ChessGame;
+import dataaccess.AlreadyTakenException;
+import dataaccess.BadRequestException;
 import dataaccess.DataAccessException;
 import dataaccess.LocalMemory;
 import model.AuthData;
@@ -15,12 +17,12 @@ public class JoinGameService extends Service{
         GameData newGameData;
         if (playerColor == ChessGame.TeamColor.BLACK) {
             if (gameData.blackUsername() != null && !gameData.blackUsername().equals(authData.username())) {
-                throw new DataAccessException("Error: already taken");
+                throw new AlreadyTakenException("Error: already taken");
             }
             newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), authData.username(), gameData.gameName(), gameData.game());
         } else {
             if (gameData.whiteUsername() != null && !gameData.whiteUsername().equals(authData.username())) {
-                throw new DataAccessException("Error: already taken");
+                throw new AlreadyTakenException("Error: already taken");
             }
             newGameData = new GameData(gameData.gameID(), authData.username(), gameData.blackUsername(), gameData.gameName(), gameData.game());
         }
@@ -30,7 +32,7 @@ public class JoinGameService extends Service{
     public void joinGame(String authToken, ChessGame.TeamColor playerColor, int gameID) throws DataAccessException {
         AuthData authData = authorize(authToken);
         if (gameDAO.getGame(gameID) == null) {
-            throw new DataAccessException("Error: bad request");
+            throw new BadRequestException("Error: bad request");
         }
         GameData gameData = gameDAO.getGame(gameID);
         gameData = addPlayer(playerColor, gameData, authData);

@@ -37,7 +37,7 @@ public class LocalMemServiceTests {
         Assertions.assertDoesNotThrow(() -> {
             registerService.register("username1", "password1", "email1");
         });
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(AlreadyTakenException.class, () -> {
             registerService.register("username1", "password2", "email2");
         });
     }
@@ -45,7 +45,7 @@ public class LocalMemServiceTests {
     @Test
     public void loginUserNoExist() {
         LoginService loginService = new LoginService(localMemory);
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
             loginService.login("myUsername", "myPassword");
         });
     }
@@ -55,7 +55,7 @@ public class LocalMemServiceTests {
         RegisterService registerService = new RegisterService(localMemory);
         LoginService loginService = new LoginService(localMemory);
         registerService.register("username", "password", "email");
-        Assertions.assertThrows(DataAccessException.class, () ->{
+        Assertions.assertThrows(UnauthorizedException.class, () ->{
             loginService.login("username", "wrongPassword");
         });
     }
@@ -73,7 +73,7 @@ public class LocalMemServiceTests {
     @Test
     public void logoutInvalid() throws DataAccessException {
         LogoutService logoutService = new LogoutService(localMemory);
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
             logoutService.logout("notValidAuthToken");
         });
     }
@@ -92,7 +92,7 @@ public class LocalMemServiceTests {
         LogoutService logoutService = new LogoutService(localMemory);
         AuthData authData = registerService.register("myUsername", "password", "email");
         logoutService.logout(authData.authToken());
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
             logoutService.logout(authData.authToken());
         });
     }
@@ -100,7 +100,7 @@ public class LocalMemServiceTests {
     @Test
     void CreateGameUnauthorizedUser() {
         CreateGameService gameService = new CreateGameService(localMemory);
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
             gameService.createGame("not a real token", "myGame");
         });
     }
@@ -116,7 +116,7 @@ public class LocalMemServiceTests {
     @Test
     void ListGamesUnauthorizedUser() {
         ListGameService listGameService = new ListGameService(localMemory);
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
            listGameService.listGames("not a real token");
         });
     }
@@ -153,7 +153,7 @@ public class LocalMemServiceTests {
         JoinGameService joinGameService = new JoinGameService(localMemory);
         AuthData authData = registerService.register("username", "password", "email");
         createGameService.createGame(authData.authToken(), "Game1");
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
             joinGameService.joinGame("not a real authToken", ChessGame.TeamColor.BLACK, 1);
         });
     }
@@ -167,7 +167,7 @@ public class LocalMemServiceTests {
         AuthData authData2 = registerService.register("username2", "password", "email");
         createGameService.createGame(authData1.authToken(), "Game1");
         joinGameService.joinGame(authData1.authToken(), ChessGame.TeamColor.BLACK, 1);
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(AlreadyTakenException.class, () -> {
             joinGameService.joinGame(authData2.authToken(), ChessGame.TeamColor.BLACK, 1);
         });
     }
@@ -179,7 +179,7 @@ public class LocalMemServiceTests {
         JoinGameService joinGameService = new JoinGameService(localMemory);
         AuthData authData = registerService.register("username", "password", "email");
         createGameService.createGame(authData.authToken(), "Game1");
-        Assertions.assertThrows(DataAccessException.class, () -> {
+        Assertions.assertThrows(BadRequestException.class, () -> {
             joinGameService.joinGame(authData.authToken(), ChessGame.TeamColor.BLACK, 2);
         });
     }

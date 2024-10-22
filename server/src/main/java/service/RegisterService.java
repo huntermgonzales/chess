@@ -12,7 +12,7 @@ public class RegisterService extends Service {
 
     public AuthData register(String username, String password, String email) throws DataAccessException {
         if (userDAO.getUserData(username) != null) {
-            throw new DataAccessException("Error: already taken");
+            throw new AlreadyTakenException("Error: already taken");
         }
         UserData userData = new UserData(username, password, email);
         userDAO.addUser(userData);

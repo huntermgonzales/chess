@@ -22,7 +22,7 @@ public abstract class Service {
     protected AuthData createAuthData(String username) throws DataAccessException {
 
         if (localMemory.getUserData(username) == null) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new UnauthorizedException("Error: unauthorized");
         }
         String authToken = UUID.randomUUID().toString();
         return new AuthData(authToken, username);
@@ -30,7 +30,7 @@ public abstract class Service {
 
     protected AuthData authorize(String authToken) throws DataAccessException {
         if (authDAO.getAuthData(authToken) == null) {
-            throw new DataAccessException("Error: unauthorized");
+            throw new UnauthorizedException("Error: unauthorized");
         }
         return authDAO.getAuthData(authToken);
     }
