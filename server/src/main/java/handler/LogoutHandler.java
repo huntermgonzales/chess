@@ -2,26 +2,25 @@ package handler;
 
 import Results.ErrorResult;
 import Results.LoginResult;
+import Results.LogoutResult;
 import com.google.gson.Gson;
-import dataaccess.AlreadyTakenException;
-import dataaccess.BadRequestException;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
-import requests.LoginRequest;
-import requests.LoginRequest;
+import requests.LogoutRequest;
 import service.LoginService;
+import service.LogoutService;
 import spark.Request;
 import spark.Response;
 
-public class LoginHandler {
+public class LogoutHandler {
 
-    public Object handleLogin(Request req, Response res) {
+    public Object handleLogout(Request req, Response res) {
         String resultJson;
         Gson serializer = new Gson();
         try {
-            var loginRequest = serializer.fromJson(req.body(), LoginRequest.class);
-            LoginService loginService = new LoginService();
-            LoginResult result = loginService.login(loginRequest);
+            String authToken = req.headers("Authorization").toString();
+            LogoutService logoutService = new LogoutService();
+            LogoutResult result = logoutService.logout(authToken);
             resultJson = serializer.toJson(result);
             res.status(200);
         } catch (DataAccessException e) {

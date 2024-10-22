@@ -1,15 +1,15 @@
 package service;
 
+import Results.LogoutResult;
 import dataaccess.DataAccessException;
-import dataaccess.LocalMemory;
-import model.AuthData;
 import requests.LogoutRequest;
 
 public class LogoutService extends Service{
 
 
-    public void logout(LogoutRequest logoutRequest) throws DataAccessException {
-        authorize(logoutRequest.authToken()); //throws exception
-        authDAO.deleteAuthData(logoutRequest.authToken());
+    public LogoutResult logout(String authToken) throws DataAccessException {
+        authorize(authToken); //throws exception
+        authDAO.deleteAuthData(authToken);
+        return new LogoutResult();
     }
 }

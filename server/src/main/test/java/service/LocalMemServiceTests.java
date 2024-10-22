@@ -72,7 +72,7 @@ public class LocalMemServiceTests {
     public void logoutInvalid() {
         LogoutService logoutService = new LogoutService();
         Assertions.assertThrows(UnauthorizedException.class, () -> {
-            logoutService.logout(new LogoutRequest("notValidAuthToken"));
+            logoutService.logout("notValidAuthToken");
         });
     }
 
@@ -81,7 +81,7 @@ public class LocalMemServiceTests {
         RegisterService registerService = new RegisterService();
         LogoutService logoutService = new LogoutService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("myUsername", "password", "email"));
-        logoutService.logout(new LogoutRequest(registerResult.authToken()));
+        logoutService.logout(registerResult.authToken());
     }
 
     @Test
@@ -89,9 +89,9 @@ public class LocalMemServiceTests {
         RegisterService registerService = new RegisterService();
         LogoutService logoutService = new LogoutService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("myUsername", "password", "email"));
-        logoutService.logout(new LogoutRequest(registerResult.authToken()));
+        logoutService.logout(registerResult.authToken());
         Assertions.assertThrows(UnauthorizedException.class, () -> {
-            logoutService.logout(new LogoutRequest(registerResult.authToken()));
+            logoutService.logout(registerResult.authToken());
         });
     }
 
