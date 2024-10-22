@@ -10,9 +10,7 @@ import model.GameData;
 import requests.JoinGameRequest;
 
 public class JoinGameService extends Service{
-    public JoinGameService(LocalMemory localMemory) {
-        super(localMemory);
-    }
+
 
     private GameData addPlayer(ChessGame.TeamColor playerColor, GameData gameData, AuthData authData) throws DataAccessException {
         GameData newGameData;

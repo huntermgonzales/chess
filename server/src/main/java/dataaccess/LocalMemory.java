@@ -14,6 +14,16 @@ public class LocalMemory {
     private Map<String, UserData> userDataMap = new HashMap<>(); //string username is key
     private Map<Integer, GameData> gameDataMap = new HashMap<>(); //int gameID is key
 
+
+    private static LocalMemory instance;
+
+    static LocalMemory getInstance() {
+        if (instance == null) {
+            instance = new LocalMemory();
+        }
+        return instance;
+    }
+
     public void createAuthData(AuthData authData) {
         authDataMap.put(authData.authToken(), authData);
     }

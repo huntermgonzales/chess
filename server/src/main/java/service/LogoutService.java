@@ -6,9 +6,6 @@ import model.AuthData;
 
 public class LogoutService extends Service{
 
-    public LogoutService(LocalMemory localMemory) {
-        super(localMemory);
-    }
 
     public void logout(String authToken) throws DataAccessException {
         authorize(authToken); //throws exception

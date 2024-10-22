@@ -3,10 +3,8 @@ package dataaccess;
 import model.AuthData;
 
 public class MemoryAuthDAO implements AuthDAO{
-    LocalMemory localMemory;
-    public MemoryAuthDAO(LocalMemory localMemory) {
-        this.localMemory = localMemory;
-    }
+
+    LocalMemory localMemory = LocalMemory.getInstance();
 
     @Override
     public void deleteAuthData(String authToken) {

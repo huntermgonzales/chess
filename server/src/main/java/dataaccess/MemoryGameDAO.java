@@ -6,10 +6,7 @@ import java.util.List;
 
 public class MemoryGameDAO implements GameDAO{
 
-    LocalMemory localMemory;
-    public MemoryGameDAO(LocalMemory localMemory) {
-        this.localMemory = localMemory;
-    }
+    LocalMemory localMemory = LocalMemory.getInstance();
 
     @Override
     public List<GameData> listAllGames() {

@@ -7,10 +7,6 @@ import requests.RegisterRequest;
 
 public class RegisterService extends Service {
 
-    public RegisterService(LocalMemory localMemory) {
-        super(localMemory);
-    }
-
     public AuthData register(RegisterRequest request) throws DataAccessException {
         if (userDAO.getUserData(request.username()) != null) {
             throw new AlreadyTakenException("Error: already taken");

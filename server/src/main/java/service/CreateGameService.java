@@ -10,9 +10,6 @@ public class CreateGameService extends Service{
 
     private int currentGameID = 0;
 
-    public CreateGameService(LocalMemory localMemory) {
-        super(localMemory);
-    }
 
     public int createGame(CreateGameRequest createGameRequest) throws DataAccessException {
         authorize(createGameRequest.authToken());

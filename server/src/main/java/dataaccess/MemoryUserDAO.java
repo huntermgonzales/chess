@@ -4,10 +4,7 @@ import model.UserData;
 
 public class MemoryUserDAO implements UserDAO{
 
-    LocalMemory localMemory;
-    public MemoryUserDAO(LocalMemory localMemory) {
-        this.localMemory = localMemory;
-    }
+    LocalMemory localMemory = LocalMemory.getInstance();
 
     @Override
     public void addUser(UserData userData) {

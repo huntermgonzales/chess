@@ -6,22 +6,20 @@ import model.AuthData;
 import java.util.UUID;
 
 public abstract class Service {
-
-    LocalMemory localMemory;
     UserDAO userDAO;
     AuthDAO authDAO;
     GameDAO gameDAO;
 
-    public Service(LocalMemory localMemory) {
-        this.localMemory = localMemory;
-        this.userDAO = new MemoryUserDAO(localMemory);
-        this.authDAO = new MemoryAuthDAO(localMemory);
-        this.gameDAO = new MemoryGameDAO(localMemory);
+
+    public Service() {
+        this.userDAO = new MemoryUserDAO();
+        this.authDAO = new MemoryAuthDAO();
+        this.gameDAO = new MemoryGameDAO();
     }
 
     protected AuthData createAuthData(String username) throws DataAccessException {
 
-        if (localMemory.getUserData(username) == null) {
+        if (userDAO.getUserData(username) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
         String authToken = UUID.randomUUID().toString();

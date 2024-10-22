@@ -9,9 +9,6 @@ import java.util.UUID;
 
 public class LoginService extends Service{
 
-    public LoginService(LocalMemory localMemory) {
-        super(localMemory);
-    }
 
     public AuthData login(LoginRequest request) throws DataAccessException {
         if (userDAO.getUserData(request.username()) == null) {
