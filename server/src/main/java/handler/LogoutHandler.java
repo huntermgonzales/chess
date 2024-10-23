@@ -18,7 +18,7 @@ public class LogoutHandler {
         String resultJson;
         Gson serializer = new Gson();
         try {
-            String authToken = req.headers("Authorization").toString();
+            String authToken = req.headers("Authorization");
             LogoutService logoutService = new LogoutService();
             LogoutResult result = logoutService.logout(authToken);
             resultJson = serializer.toJson(result);

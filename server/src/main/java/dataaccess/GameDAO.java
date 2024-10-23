@@ -12,4 +12,6 @@ public interface GameDAO extends DataAccess{
     public GameData getGame(int gameID);
 
     public void updateGameData(GameData gameData);
+
+    public int getNumberOfGames();
 }

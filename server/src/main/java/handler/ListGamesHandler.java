@@ -1,24 +1,23 @@
 package handler;
 
 import Results.ErrorResult;
-import Results.LoginResult;
+import Results.ListGamesResult;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
-import requests.LoginRequest;
-import service.LoginService;
+import service.ListGameService;
 import spark.Request;
 import spark.Response;
 
-public class LoginHandler {
+public class ListGamesHandler {
 
-    public Object handleLogin(Request req, Response res) {
+    public Object handleListGames(Request req, Response res) {
         String resultJson;
         Gson serializer = new Gson();
         try {
-            var loginRequest = serializer.fromJson(req.body(), LoginRequest.class);
-            LoginService loginService = new LoginService();
-            LoginResult result = loginService.login(loginRequest);
+            String authToken = req.headers("Authorization");
+            ListGameService listGameService = new ListGameService();
+            ListGamesResult result = listGameService.listGames(authToken);
             resultJson = serializer.toJson(result);
             res.status(200);
         } catch (DataAccessException e) {

@@ -99,7 +99,7 @@ public class LocalMemServiceTests {
     void CreateGameUnauthorizedUser() {
         CreateGameService gameService = new CreateGameService();
         Assertions.assertThrows(UnauthorizedException.class, () -> {
-            gameService.createGame(new CreateGameRequest("not a real token", "myGame"));
+            gameService.createGame(new CreateGameRequest("myGame"), "not a real token");
         });
     }
 
@@ -108,7 +108,7 @@ public class LocalMemServiceTests {
         RegisterService registerService = new RegisterService();
         CreateGameService createGameService = new CreateGameService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("username", "password", "email"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "newGame"));
+        createGameService.createGame(new CreateGameRequest("newGame"), registerResult.authToken());
     }
 
     @Test
@@ -125,11 +125,11 @@ public class LocalMemServiceTests {
         CreateGameService createGameService = new CreateGameService();
         ListGameService listGameService = new ListGameService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("username", "password", "email"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game1"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game2"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game3"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game4"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game5"));
+        createGameService.createGame(new CreateGameRequest("Game1"), registerResult.authToken());
+        createGameService.createGame(new CreateGameRequest("Game2"), registerResult.authToken());
+        createGameService.createGame(new CreateGameRequest("Game3"), registerResult.authToken());
+        createGameService.createGame(new CreateGameRequest("Game4"), registerResult.authToken());
+        createGameService.createGame(new CreateGameRequest("Game5"), registerResult.authToken());
         ListGamesResult games = listGameService.listGames(new ListGameRequest(registerResult.authToken()));
         Assertions.assertEquals(5, games.games().size());
     }
@@ -140,7 +140,7 @@ public class LocalMemServiceTests {
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("username", "password", "email"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game1"));
+        createGameService.createGame(new CreateGameRequest("Game1"), registerResult.authToken());
         joinGameService.joinGame(new JoinGameRequest(registerResult.authToken(), ChessGame.TeamColor.BLACK, 1));
     }
 
@@ -150,7 +150,7 @@ public class LocalMemServiceTests {
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("username", "password", "email"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game1"));
+        createGameService.createGame(new CreateGameRequest("Game1"), registerResult.authToken());
         Assertions.assertThrows(UnauthorizedException.class, () -> {
             joinGameService.joinGame(new JoinGameRequest("not a real authToken", ChessGame.TeamColor.BLACK, 1));
         });
@@ -163,7 +163,7 @@ public class LocalMemServiceTests {
         JoinGameService joinGameService = new JoinGameService();
         RegisterResult registerResult1 = registerService.register(new RegisterRequest("username1", "password", "email"));
         RegisterResult registerResult2 = registerService.register(new RegisterRequest("username2", "password", "email"));
-        createGameService.createGame(new CreateGameRequest(registerResult1.authToken(), "Game1"));
+        createGameService.createGame(new CreateGameRequest("Game1"), registerResult1.authToken());
         joinGameService.joinGame(new JoinGameRequest(registerResult1.authToken(), ChessGame.TeamColor.BLACK, 1));
         Assertions.assertThrows(AlreadyTakenException.class, () -> {
             joinGameService.joinGame(new JoinGameRequest(registerResult2.authToken(), ChessGame.TeamColor.BLACK, 1));
@@ -176,7 +176,7 @@ public class LocalMemServiceTests {
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("username", "password", "email"));
-        createGameService.createGame(new CreateGameRequest(registerResult.authToken(), "Game1"));
+        createGameService.createGame(new CreateGameRequest("Game1"), registerResult.authToken());
         Assertions.assertThrows(BadRequestException.class, () -> {
             joinGameService.joinGame(new JoinGameRequest(registerResult.authToken(), ChessGame.TeamColor.BLACK, 2));
         });

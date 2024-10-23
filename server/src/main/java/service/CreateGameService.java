@@ -9,15 +9,13 @@ import requests.CreateGameRequest;
 
 public class CreateGameService extends Service{
 
-    private int currentGameID = 0;
 
+    public CreateGameResult createGame(CreateGameRequest createGameRequest, String authToken) throws DataAccessException {
+        authorize(authToken);
 
-    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException {
-        authorize(createGameRequest.authToken());
-        currentGameID++;
-        int gameID = currentGameID;
+        int gameID = 1 + gameDAO.getNumberOfGames();
         GameData newGame = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.addGame(newGame);
-        return new CreateGameResult(currentGameID);
+        return new CreateGameResult(gameID);
     }
 }
