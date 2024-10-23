@@ -1,13 +1,18 @@
 package service;
 
-import dataaccess.LocalMemory;
+import Results.ClearResult;
+import dataaccess.DataAccessException;
 
 public class ClearService extends Service{
 
-    public void clearAll () {
+    public ClearResult clearAll () throws DataAccessException {
         gameDAO.deleteAll();
         authDAO.deleteAll();
         userDAO.deleteAll();
+        if (gameDAO.getNumberOfGames() != 0) {
+            throw new DataAccessException("Error: unable to clear database");
+        }
+        return new ClearResult();
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public class LocalMemServiceTests {
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws DataAccessException {
         new ClearService().clearAll();
     }
 
