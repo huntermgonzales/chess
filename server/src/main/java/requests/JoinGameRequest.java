@@ -4,5 +4,5 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 
-public record JoinGameRequest(String authToken, ChessGame.TeamColor playerColor, int gameID) {
+public record JoinGameRequest(ChessGame.TeamColor playerColor, int gameID) {
 }
