@@ -1,7 +1,7 @@
 package handler;
 
-import Results.ErrorResult;
-import Results.RegisterResult;
+import results.ErrorResult;
+import results.RegisterResult;
 import com.google.gson.Gson;
 import dataaccess.AlreadyTakenException;
 import dataaccess.BadRequestException;

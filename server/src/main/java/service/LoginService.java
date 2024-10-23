@@ -1,13 +1,12 @@
 package service;
 
-import Results.LoginResult;
+import results.LoginResult;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import requests.LoginRequest;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class LoginService extends Service{
 

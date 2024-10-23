@@ -1,8 +1,7 @@
 package service;
 
-import Results.LogoutResult;
+import results.LogoutResult;
 import dataaccess.DataAccessException;
-import requests.LogoutRequest;
 
 public class LogoutService extends Service{
 

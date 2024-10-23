@@ -1,9 +1,8 @@
 package service;
 
-import Results.CreateGameResult;
+import results.CreateGameResult;
 import chess.ChessGame;
 import dataaccess.DataAccessException;
-import dataaccess.LocalMemory;
 import model.GameData;
 import requests.CreateGameRequest;
 

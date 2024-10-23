@@ -1,7 +1,7 @@
 package handler;
 
-import Results.ErrorResult;
-import Results.ListGamesResult;
+import results.ErrorResult;
+import results.ListGamesResult;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;

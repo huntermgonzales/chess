@@ -1,7 +1,7 @@
 package handler;
 
-import Results.ErrorResult;
-import Results.JoinGameResult;
+import results.ErrorResult;
+import results.JoinGameResult;
 import com.google.gson.Gson;
 import dataaccess.AlreadyTakenException;
 import dataaccess.BadRequestException;

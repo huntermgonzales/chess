@@ -1,10 +1,7 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-
-import static chess.ChessPiece.PieceType.*;
 
 /**
  * Represents a single chess piece
@@ -81,28 +78,28 @@ public class ChessPiece {
 
         switch (type) {
             case BISHOP:
-                BishopMovesCalculator BishopMoves = new BishopMovesCalculator(pieceColor);
-                moves = BishopMoves.calculatePossibleMoves(board, myPosition);
+                BishopMovesCalculator bishopMoves = new BishopMovesCalculator(pieceColor);
+                moves = bishopMoves.calculatePossibleMoves(board, myPosition);
                 break;
             case KNIGHT:
-                KnightMovesCalculator KnightMoves = new KnightMovesCalculator(pieceColor);
-                moves = KnightMoves.calculatePossibleMoves(board, myPosition);
+                KnightMovesCalculator knightMoves = new KnightMovesCalculator(pieceColor);
+                moves = knightMoves.calculatePossibleMoves(board, myPosition);
                 break;
             case PAWN:
-                PawnMovesCalculator PawnMoves = new PawnMovesCalculator(pieceColor);
-                moves = PawnMoves.calculatePossibleMoves(board, myPosition);
+                PawnMovesCalculator pawnMoves = new PawnMovesCalculator(pieceColor);
+                moves = pawnMoves.calculatePossibleMoves(board, myPosition);
                 break;
             case PieceType.QUEEN:
-                QueenMovesCalculator QueenMoves = new QueenMovesCalculator(pieceColor);
-                moves = QueenMoves.calculatePossibleMoves(board, myPosition);
+                QueenMovesCalculator queenMoves = new QueenMovesCalculator(pieceColor);
+                moves = queenMoves.calculatePossibleMoves(board, myPosition);
                 break;
             case KING:
-                KingMovesCalculator KingMoves = new KingMovesCalculator(pieceColor);
-                moves = KingMoves.calculatePossibleMoves(board, myPosition);
+                KingMovesCalculator kingMoves = new KingMovesCalculator(pieceColor);
+                moves = kingMoves.calculatePossibleMoves(board, myPosition);
                 break;
             case ROOK:
-                RookMovesCalculator RookMoves = new RookMovesCalculator(pieceColor);
-                moves = RookMoves.calculatePossibleMoves(board, myPosition);
+                RookMovesCalculator rookMoves = new RookMovesCalculator(pieceColor);
+                moves = rookMoves.calculatePossibleMoves(board, myPosition);
                 break;
             default:
                 return null;

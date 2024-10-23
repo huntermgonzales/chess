@@ -1,7 +1,7 @@
 package handler;
 
-import Results.ClearResult;
-import Results.ErrorResult;
+import results.ClearResult;
+import results.ErrorResult;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import service.ClearService;

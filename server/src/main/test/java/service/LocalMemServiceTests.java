@@ -1,5 +1,5 @@
-import Results.ListGamesResult;
-import Results.RegisterResult;
+import results.ListGamesResult;
+import results.RegisterResult;
 import chess.ChessGame;
 import dataaccess.*;
 import org.junit.jupiter.api.Assertions;

@@ -1,6 +1,6 @@
 package service;
 
-import Results.ListGamesResult;
+import results.ListGamesResult;
 import dataaccess.DataAccessException;
 
 public class ListGameService extends Service{

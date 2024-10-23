@@ -3,10 +3,8 @@ package chess;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Objects;
 
 import static chess.ChessPiece.PieceType.KING;
-import static chess.ChessPiece.PieceType.PAWN;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -99,7 +97,7 @@ public class ChessBoard {
         return squares[position.getRow() - 1][position.getColumn() - 1];
     }
 
-    private void CreateAndAddPiece(int row, int col, ChessGame.TeamColor teamColor, ChessPiece.PieceType pieceType) {
+    private void createAndAddPiece(int row, int col, ChessGame.TeamColor teamColor, ChessPiece.PieceType pieceType) {
         ChessPiece piece = new ChessPiece(teamColor, pieceType);
         ChessPosition position = new ChessPosition(row, col);
         addPiece(position, piece);
@@ -111,27 +109,27 @@ public class ChessBoard {
     public void resetBoard() {
         //for white
         for (int col = 1; col <= 8; col++) {
-            CreateAndAddPiece(2, col, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            createAndAddPiece(2, col, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         }
-        CreateAndAddPiece(1, 1, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-        CreateAndAddPiece(1,2, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-        CreateAndAddPiece(1,3, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        CreateAndAddPiece(1,4, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-        CreateAndAddPiece(1,5, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
-        CreateAndAddPiece(1,6, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        CreateAndAddPiece(1,7, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-        CreateAndAddPiece(1,8, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        createAndAddPiece(1, 1, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        createAndAddPiece(1,2, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        createAndAddPiece(1,3, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        createAndAddPiece(1,4, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        createAndAddPiece(1,5, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        createAndAddPiece(1,6, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        createAndAddPiece(1,7, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        createAndAddPiece(1,8, ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
         //For Black
         for (int col = 1; col <= 8; col++) {
-            CreateAndAddPiece(7, col, ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            createAndAddPiece(7, col, ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         }
-        CreateAndAddPiece(8,1, ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-        CreateAndAddPiece(8,2, ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-        CreateAndAddPiece(8,3,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-        CreateAndAddPiece(8,4,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
-        CreateAndAddPiece(8,5,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-        CreateAndAddPiece(8,6,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-        CreateAndAddPiece(8,7,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-        CreateAndAddPiece(8,8,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        createAndAddPiece(8,1, ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        createAndAddPiece(8,2, ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        createAndAddPiece(8,3,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        createAndAddPiece(8,4,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+        createAndAddPiece(8,5,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+        createAndAddPiece(8,6,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        createAndAddPiece(8,7,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        createAndAddPiece(8,8,ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
     }
 }
