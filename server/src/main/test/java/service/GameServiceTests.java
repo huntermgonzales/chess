@@ -1,3 +1,5 @@
+package service;
+
 import results.ListGamesResult;
 import results.RegisterResult;
 import chess.ChessGame;
