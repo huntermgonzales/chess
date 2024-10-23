@@ -14,7 +14,7 @@ public class CreateGameService extends Service{
         authorize(authToken);
 
         int gameID = 1 + gameDAO.getNumberOfGames();
-        GameData newGame = new GameData(gameID, "", "", createGameRequest.gameName(), new ChessGame());
+        GameData newGame = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.addGame(newGame);
         return new CreateGameResult(gameID);
     }

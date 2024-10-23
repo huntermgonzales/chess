@@ -18,15 +18,17 @@ public class JoinGameService extends Service{
     private GameData addPlayer(ChessGame.TeamColor playerColor, GameData gameData, AuthData authData) throws DataAccessException {
         GameData newGameData;
         if (playerColor == ChessGame.TeamColor.BLACK) {
-            if (!Objects.equals(gameData.blackUsername(), "") && !gameData.blackUsername().equals(authData.username())) {
+            if (!Objects.equals(gameData.blackUsername(), null) && !gameData.blackUsername().equals(authData.username())) {
                 throw new AlreadyTakenException("Error: already taken");
             }
             newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), authData.username(), gameData.gameName(), gameData.game());
-        } else {
-            if (!Objects.equals(gameData.whiteUsername(), "") && !gameData.whiteUsername().equals(authData.username())) {
+        } else if (playerColor == ChessGame.TeamColor.WHITE) {
+            if (!Objects.equals(gameData.whiteUsername(), null) && !gameData.whiteUsername().equals(authData.username())) {
                 throw new AlreadyTakenException("Error: already taken");
             }
             newGameData = new GameData(gameData.gameID(), authData.username(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+        } else {
+            throw new BadRequestException("Error: bad request");
         }
         return newGameData;
     }

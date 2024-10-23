@@ -12,6 +12,9 @@ public class RegisterService extends Service {
         if (userDAO.getUserData(request.username()) != null) {
             throw new AlreadyTakenException("Error: already taken");
         }
+        if (request.username() == null || request.password() == null || request.email() == null) {
+            throw new BadRequestException("Error: bad request");
+        }
         UserData userData = new UserData(request.username(), request.password(), request.email());
         userDAO.addUser(userData);
         AuthData authData = createAuthData(request.username());
