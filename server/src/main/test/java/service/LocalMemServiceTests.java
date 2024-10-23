@@ -2,16 +2,11 @@ import Results.ListGamesResult;
 import Results.RegisterResult;
 import chess.ChessGame;
 import dataaccess.*;
-import model.AuthData;
-import model.GameData;
-import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requests.*;
 import service.*;
-
-import java.util.List;
 
 public class LocalMemServiceTests {
 
@@ -21,7 +16,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    public void RegisterOnce() {
+    public void registerOnce() {
         RegisterService registerService = new RegisterService();
         Assertions.assertDoesNotThrow(() -> {
             registerService.register(new RegisterRequest("usernameNoInUse", "password", "email"));
@@ -30,7 +25,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void RegisterSameUsernameTwice() {
+    void registerSameUsernameTwice() {
         RegisterService registerService = new RegisterService();
         Assertions.assertDoesNotThrow(() -> {
             registerService.register(new RegisterRequest("username1", "password1", "email1"));
@@ -96,7 +91,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void CreateGameUnauthorizedUser() {
+    void createGameUnauthorizedUser() {
         CreateGameService gameService = new CreateGameService();
         Assertions.assertThrows(UnauthorizedException.class, () -> {
             gameService.createGame(new CreateGameRequest("myGame"), "not a real token");
@@ -104,7 +99,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void CreateGameSuccess() throws DataAccessException {
+    void createGameSuccess() throws DataAccessException {
         RegisterService registerService = new RegisterService();
         CreateGameService createGameService = new CreateGameService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("username", "password", "email"));
@@ -112,7 +107,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void ListGamesUnauthorizedUser() {
+    void listGamesUnauthorizedUser() {
         ListGameService listGameService = new ListGameService();
         Assertions.assertThrows(UnauthorizedException.class, () -> {
            listGameService.listGames("not a real token");
@@ -120,7 +115,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void List5Games() throws DataAccessException {
+    void list5Games() throws DataAccessException {
         RegisterService registerService = new RegisterService();
         CreateGameService createGameService = new CreateGameService();
         ListGameService listGameService = new ListGameService();
@@ -135,7 +130,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void JoinGameSuccess() throws DataAccessException {
+    void joinGameSuccess() throws DataAccessException {
         RegisterService registerService = new RegisterService();
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
@@ -145,7 +140,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void JoinGameUnauthorized() throws DataAccessException {
+    void joinGameUnauthorized() throws DataAccessException {
         RegisterService registerService = new RegisterService();
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
@@ -157,7 +152,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void JoinGameAddSameColorTwice() throws DataAccessException {
+    void joinGameAddSameColorTwice() throws DataAccessException {
         RegisterService registerService = new RegisterService();
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
@@ -171,7 +166,7 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void JoinGameGameDoesNotExist() throws DataAccessException {
+    void joinGameGameDoesNotExist() throws DataAccessException {
         RegisterService registerService = new RegisterService();
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
@@ -183,8 +178,8 @@ public class LocalMemServiceTests {
     }
 
     @Test
-    void ClearAll() throws DataAccessException {
-        JoinGameSuccess();
+    void clearAll() throws DataAccessException {
+        joinGameSuccess();
         ClearService clearService = new ClearService();
         clearService.clearAll();
 
