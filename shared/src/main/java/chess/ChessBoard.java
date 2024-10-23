@@ -26,8 +26,12 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessBoard that = (ChessBoard) o;
         return Arrays.deepEquals(squares, that.squares);
     }
@@ -55,19 +59,27 @@ public class ChessBoard {
         return positions;
     }
 
-    //(squares[i][j].getPieceType() == KING && squares[i][j].getTeamColor() != color)
+
+    public boolean isKingOnSquare(int i, int j) {
+        Collection<ChessMove> moves = squares[i][j].pieceMoves(this, new ChessPosition(i + 1,j + 1));
+        for (ChessMove move : moves) {
+            ChessPiece piece = squares[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1];
+            if (piece != null && piece.getPieceType() == KING) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //This function will return whether the king of the team who's turn it is is currently being attacked
     //(this means it cant make that move)
     public boolean isCurrentKingAttacked(ChessGame.TeamColor color) {
+        boolean kingAttacked = false;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (squares[i][j] != null && squares[i][j].getTeamColor() != color) {
-                    Collection<ChessMove> moves = squares[i][j].pieceMoves(this, new ChessPosition(i + 1,j + 1));
-                    for (ChessMove move : moves) {
-                        ChessPiece piece = squares[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1];
-                        if (piece != null && piece.getPieceType() == KING) {
-                            return true;
-                        }
+                    if (isKingOnSquare(i,j)) {
+                        return true;
                     }
                 }
             }

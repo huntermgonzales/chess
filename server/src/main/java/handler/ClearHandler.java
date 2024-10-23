@@ -8,7 +8,7 @@ import service.ClearService;
 import spark.Request;
 import spark.Response;
 
-public class ClearHandler {
+public class ClearHandler extends Handler{
 
     public Object handleClear(Request req, Response res) {
         String resultJson;
@@ -19,9 +19,7 @@ public class ClearHandler {
             resultJson = serializer.toJson(result);
             res.status(200);
         } catch (DataAccessException e) {
-            ErrorResult result = new ErrorResult("Error: data access error");
-            res.status(500);
-            resultJson = serializer.toJson(result);
+            resultJson = catchErrors(e, res);
         }
         return resultJson;
     }

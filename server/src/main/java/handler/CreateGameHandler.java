@@ -11,7 +11,7 @@ import service.CreateGameService;
 import spark.Request;
 import spark.Response;
 
-public class CreateGameHandler {
+public class CreateGameHandler extends Handler{
 
     public Object handleCreateGame(Request req, Response res) {
         String resultJson;
@@ -24,18 +24,7 @@ public class CreateGameHandler {
             resultJson = serializer.toJson(result);
             res.status(200);
         }catch (DataAccessException e) {
-            ErrorResult result;
-            if (e.getClass() == UnauthorizedException.class) {
-                result = new ErrorResult("Error: unauthorized");
-                res.status(401);
-            } else if (e.getClass() == BadRequestException.class) {
-                result = new ErrorResult("Error: bad request");
-                res.status(400);
-            } else {
-                result = new ErrorResult("Error: data access error");
-                res.status(500);
-            }
-            resultJson = serializer.toJson(result);
+            resultJson = catchErrors(e, res);
         }
 
         return resultJson;
