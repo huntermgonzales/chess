@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import requests.*;
 import service.*;
 
-public class LocalMemServiceTests {
+public class GameServiceTests {
 
     @BeforeEach
     void beforeEach() throws DataAccessException {
