@@ -1,11 +1,8 @@
 package handler;
 
 import results.CreateGameResult;
-import results.ErrorResult;
 import com.google.gson.Gson;
-import dataaccess.BadRequestException;
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import dataaccess.exceptions.DataAccessException;
 import requests.CreateGameRequest;
 import service.CreateGameService;
 import spark.Request;

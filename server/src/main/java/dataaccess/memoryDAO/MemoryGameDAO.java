@@ -1,10 +1,11 @@
-package dataaccess;
+package dataaccess.memoryDAO;
 
+import dataaccess.GameDAO;
 import model.GameData;
 
 import java.util.List;
 
-public class MemoryGameDAO implements GameDAO{
+public class MemoryGameDAO implements GameDAO {
 
     LocalMemory localMemory = LocalMemory.getInstance();
 

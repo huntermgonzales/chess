@@ -1,10 +1,8 @@
 package handler;
 
-import results.ErrorResult;
 import results.LoginResult;
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import dataaccess.exceptions.DataAccessException;
 import requests.LoginRequest;
 import service.LoginService;
 import spark.Request;

@@ -1,8 +1,9 @@
-package dataaccess;
+package dataaccess.memoryDAO;
 
+import dataaccess.AuthDAO;
 import model.AuthData;
 
-public class MemoryAuthDAO implements AuthDAO{
+public class MemoryAuthDAO implements AuthDAO {
 
     LocalMemory localMemory = LocalMemory.getInstance();
 

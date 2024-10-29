@@ -1,12 +1,8 @@
 package handler;
 
-import results.ErrorResult;
 import results.JoinGameResult;
 import com.google.gson.Gson;
-import dataaccess.AlreadyTakenException;
-import dataaccess.BadRequestException;
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import dataaccess.exceptions.DataAccessException;
 import requests.JoinGameRequest;
 import service.JoinGameService;
 import spark.Request;

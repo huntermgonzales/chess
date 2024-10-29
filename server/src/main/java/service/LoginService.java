@@ -1,7 +1,8 @@
 package service;
 
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.UnauthorizedException;
 import results.LoginResult;
-import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import requests.LoginRequest;

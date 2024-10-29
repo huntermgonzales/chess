@@ -1,11 +1,8 @@
 package handler;
 
-import results.ErrorResult;
 import results.RegisterResult;
 import com.google.gson.Gson;
-import dataaccess.AlreadyTakenException;
-import dataaccess.BadRequestException;
-import dataaccess.DataAccessException;
+import dataaccess.exceptions.DataAccessException;
 import requests.RegisterRequest;
 import service.RegisterService;
 import spark.Request;

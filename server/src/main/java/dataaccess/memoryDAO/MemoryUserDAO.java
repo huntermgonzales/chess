@@ -1,8 +1,9 @@
-package dataaccess;
+package dataaccess.memoryDAO;
 
+import dataaccess.UserDAO;
 import model.UserData;
 
-public class MemoryUserDAO implements UserDAO{
+public class MemoryUserDAO implements UserDAO {
 
     LocalMemory localMemory = LocalMemory.getInstance();
 
