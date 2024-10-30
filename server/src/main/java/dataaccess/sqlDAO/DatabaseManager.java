@@ -11,6 +11,7 @@ public class DatabaseManager {
     private static final String PASSWORD;
     private static final String CONNECTION_URL;
 
+
     /*
      * Load the database information for the db.properties file.
      */
@@ -49,6 +50,7 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
 
     /**
      * Create a connection to the database and sets the catalog based upon the
