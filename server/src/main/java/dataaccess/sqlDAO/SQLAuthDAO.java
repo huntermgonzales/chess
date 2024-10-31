@@ -5,6 +5,9 @@ import dataaccess.AuthDAO;
 import dataaccess.exceptions.DataAccessException;
 import model.AuthData;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class SQLAuthDAO implements AuthDAO {
     @Override
     public void deleteAuthData(String authToken) throws DataAccessException {
@@ -12,7 +15,20 @@ public class SQLAuthDAO implements AuthDAO {
     }
 
     @Override
-    public AuthData getAuthData(String username) throws DataAccessException {
+    public AuthData getAuthData(String authToken) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authToken, username FROM authData WHERE authToken=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readAuthData(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Error: unable to get data from database");
+        }
         return null;
     }
 
@@ -25,7 +41,15 @@ public class SQLAuthDAO implements AuthDAO {
     }
 
     @Override
-    public void deleteAll() {
-
+    public void deleteAll() throws DataAccessException {
+        var statement = "TRUNCATE authData";
+        MySQLAccess.executeUpdate(statement);
     }
+
+    private AuthData readAuthData(ResultSet rs) throws SQLException {
+        var authToken = rs.getString("authToken");
+        var username = rs.getString("username");
+        return new AuthData(authToken, username);
+    }
+
 }
