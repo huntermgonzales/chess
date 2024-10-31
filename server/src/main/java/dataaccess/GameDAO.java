@@ -7,7 +7,7 @@ import java.util.List;
 public interface GameDAO extends DataAccess{
     public List<GameData> listAllGames();
 
-    public void addGame(GameData gameData);
+    public Integer addGame(GameData gameData);
 
     public GameData getGame(int gameID);
 

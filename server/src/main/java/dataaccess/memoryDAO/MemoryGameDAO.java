@@ -15,8 +15,8 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void addGame(GameData gameData) {
-        localMemory.createGameData(gameData);
+    public Integer addGame(GameData gameData) {
+        return localMemory.createGameData(gameData);
     }
 
     @Override

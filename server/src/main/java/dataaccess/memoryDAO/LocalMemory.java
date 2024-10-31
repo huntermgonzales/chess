@@ -13,7 +13,7 @@ public class LocalMemory {
     private Map<String, AuthData> authDataMap = new HashMap<>(); //string AuthToken is key
     private Map<String, UserData> userDataMap = new HashMap<>(); //string username is key
     private Map<Integer, GameData> gameDataMap = new HashMap<>(); //int gameID is key
-
+    int nextGameID = 1;
 
     private static LocalMemory instance;
 
@@ -55,8 +55,13 @@ public class LocalMemory {
     }
 
 
-    public void createGameData(GameData gameData) {
-        gameDataMap.put(gameData.gameID(), gameData);
+    public Integer createGameData(GameData gameData) {
+        Integer gameID = nextGameID;
+        nextGameID++;
+        GameData newGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(),
+                gameData.gameName(), gameData.game());
+        gameDataMap.put(newGameData.gameID(), newGameData);
+        return gameID;
     }
 
     public GameData getGameData(int gameID) {

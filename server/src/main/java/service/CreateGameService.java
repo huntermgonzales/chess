@@ -11,10 +11,8 @@ public class CreateGameService extends Service{
 
     public CreateGameResult createGame(CreateGameRequest createGameRequest, String authToken) throws DataAccessException {
         authorize(authToken);
-
-        int gameID = 1 + gameDAO.getNumberOfGames();
-        GameData newGame = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
-        gameDAO.addGame(newGame);
+        GameData newGame = new GameData(null, null, null, createGameRequest.gameName(), new ChessGame());
+        int gameID = gameDAO.addGame(newGame);
         return new CreateGameResult(gameID);
     }
 }

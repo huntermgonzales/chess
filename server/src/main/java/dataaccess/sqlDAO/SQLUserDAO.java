@@ -41,7 +41,8 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public void deleteAll() throws DataAccessException {
-
+        var statement = "TRUNCATE userData";
+        MySQLAccess.executeUpdate(statement);
     }
 
     private UserData readUserData(ResultSet rs) throws SQLException {

@@ -4,6 +4,7 @@ import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.BadRequestException;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.UnauthorizedException;
+import results.CreateGameResult;
 import results.ListGamesResult;
 import results.RegisterResult;
 import chess.ChessGame;
@@ -139,8 +140,8 @@ public class GameServiceTests {
         CreateGameService createGameService = new CreateGameService();
         JoinGameService joinGameService = new JoinGameService();
         RegisterResult registerResult = registerService.register(new RegisterRequest("username", "password", "email"));
-        createGameService.createGame(new CreateGameRequest("Game1"), registerResult.authToken());
-        joinGameService.joinGame(registerResult.authToken(), new JoinGameRequest(ChessGame.TeamColor.BLACK, 1));
+        CreateGameResult result = createGameService.createGame(new CreateGameRequest("Game1"), registerResult.authToken());
+        joinGameService.joinGame(registerResult.authToken(), new JoinGameRequest(ChessGame.TeamColor.BLACK, result.gameID()));
     }
 
     @Test
@@ -162,10 +163,10 @@ public class GameServiceTests {
         JoinGameService joinGameService = new JoinGameService();
         RegisterResult registerResult1 = registerService.register(new RegisterRequest("username1", "password", "email"));
         RegisterResult registerResult2 = registerService.register(new RegisterRequest("username2", "password", "email"));
-        createGameService.createGame(new CreateGameRequest("Game1"), registerResult1.authToken());
-        joinGameService.joinGame(registerResult1.authToken(), new JoinGameRequest(ChessGame.TeamColor.BLACK, 1));
+        CreateGameResult result = createGameService.createGame(new CreateGameRequest("Game1"), registerResult1.authToken());
+        joinGameService.joinGame(registerResult1.authToken(), new JoinGameRequest(ChessGame.TeamColor.BLACK, result.gameID()));
         Assertions.assertThrows(AlreadyTakenException.class, () -> {
-            joinGameService.joinGame(registerResult2.authToken(), new JoinGameRequest(ChessGame.TeamColor.BLACK, 1));
+            joinGameService.joinGame(registerResult2.authToken(), new JoinGameRequest(ChessGame.TeamColor.BLACK, result.gameID()));
         });
     }
 

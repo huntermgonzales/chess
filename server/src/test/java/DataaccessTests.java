@@ -24,6 +24,7 @@ public class DataaccessTests {
     @BeforeEach
     void setUp() throws DataAccessException {
         new SQLAuthDAO().deleteAll();
+        new SQLUserDAO().deleteAll();
     }
 
 
@@ -81,7 +82,7 @@ public class DataaccessTests {
     @Test
     void addAndGetUserData() throws DataAccessException {
         UserDAO userDAO = new SQLUserDAO();
-        String username = "username1";
+        String username = "username";
         String password = "password";
         String email = "email";
         UserData userData = new UserData(username, password, email);
