@@ -13,7 +13,7 @@ public class MySQLAccess {
         configureDatabase();
     }
 
-    public int executeUpdate(String statement, Object... params) throws DataAccessException {
+    public static int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
