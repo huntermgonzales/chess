@@ -1,12 +1,17 @@
 import dataaccess.AuthDAO;
+import dataaccess.UserDAO;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.sqlDAO.MySQLAccess;
 import dataaccess.sqlDAO.SQLAuthDAO;
+import dataaccess.sqlDAO.SQLUserDAO;
 import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.UUID;
 
 public class DataaccessTests {
@@ -65,5 +70,24 @@ public class DataaccessTests {
         authDAO.addAuthData(authData);
         authDAO.deleteAuthData(authToken);
         Assertions.assertNull(authDAO.getAuthData(authToken));
+    }
+
+    @Test
+    void addUserData() throws DataAccessException {
+        UserDAO userDAO = new SQLUserDAO();
+        Assertions.assertDoesNotThrow(() -> userDAO.addUser(new UserData("username", "password", "email")));
+    }
+
+    @Test
+    void addAndGetUserData() throws DataAccessException {
+        UserDAO userDAO = new SQLUserDAO();
+        String username = "username1";
+        String password = "password";
+        String email = "email";
+        UserData userData = new UserData(username, password, email);
+        userDAO.addUser(userData);
+        UserData returnedUserData = userDAO.getUserData(username);
+        Assertions.assertEquals(username, returnedUserData.username());
+        Assertions.assertTrue(BCrypt.checkpw(password, returnedUserData.password()));
     }
 }
