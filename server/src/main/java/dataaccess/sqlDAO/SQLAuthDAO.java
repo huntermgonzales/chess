@@ -9,9 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SQLAuthDAO implements AuthDAO {
+
     @Override
     public void deleteAuthData(String authToken) throws DataAccessException {
-
+        var statement = "DELETE FROM authData WHERE authToken=?";
+        MySQLAccess.executeUpdate(statement, authToken);
     }
 
     @Override

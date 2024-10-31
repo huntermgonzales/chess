@@ -1,6 +1,5 @@
 import dataaccess.AuthDAO;
 import dataaccess.exceptions.DataAccessException;
-import dataaccess.sqlDAO.DatabaseManager;
 import dataaccess.sqlDAO.MySQLAccess;
 import dataaccess.sqlDAO.SQLAuthDAO;
 import model.AuthData;
@@ -22,10 +21,6 @@ public class DataaccessTests {
         new SQLAuthDAO().deleteAll();
     }
 
-    @Test
-    void deleteAll() throws DataAccessException {
-        new SQLAuthDAO().deleteAll();
-    }
 
     @Test
     void addAuthData() throws DataAccessException {
@@ -43,10 +38,32 @@ public class DataaccessTests {
     }
 
     @Test
+    void addTwoRetrieveFirstAuthData() throws DataAccessException {
+        AuthDAO authDAO = new SQLAuthDAO();
+        String authToken1 = UUID.randomUUID().toString();
+        AuthData authData1 = new AuthData(authToken1, "username1");
+        authDAO.addAuthData(authData1);
+        String authToken2 = UUID.randomUUID().toString();
+        AuthData authData2 = new AuthData(authToken2, "username2");
+        authDAO.addAuthData(authData2);
+        Assertions.assertEquals(authData1, authDAO.getAuthData(authToken1));
+    }
+
+    @Test
     void addDuplicateAuthToken() throws DataAccessException {
         AuthDAO authDAO = new SQLAuthDAO();
         String authToken = UUID.randomUUID().toString();
         authDAO.addAuthData(new AuthData(authToken, "username"));
         Assertions.assertThrows(DataAccessException.class, () -> authDAO.addAuthData(new AuthData(authToken, "username1")));
+    }
+
+    @Test
+    void deleteAuthData() throws DataAccessException {
+        AuthDAO authDAO = new SQLAuthDAO();
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, "username");
+        authDAO.addAuthData(authData);
+        authDAO.deleteAuthData(authToken);
+        Assertions.assertNull(authDAO.getAuthData(authToken));
     }
 }
