@@ -30,11 +30,6 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public int getNumberOfGames() {
-        return localMemory.getNumberOfGames();
-    }
-
-    @Override
     public void deleteAll() {
         localMemory.deleteAllGameData();
     }

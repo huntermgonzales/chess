@@ -1,10 +1,14 @@
+import chess.ChessGame;
 import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.sqlDAO.MySQLAccess;
 import dataaccess.sqlDAO.SQLAuthDAO;
+import dataaccess.sqlDAO.SQLGameDAO;
 import dataaccess.sqlDAO.SQLUserDAO;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,6 +29,7 @@ public class DataaccessTests {
     void setUp() throws DataAccessException {
         new SQLAuthDAO().deleteAll();
         new SQLUserDAO().deleteAll();
+        new SQLGameDAO().deleteAll();
     }
 
 
@@ -83,12 +88,19 @@ public class DataaccessTests {
     void addAndGetUserData() throws DataAccessException {
         UserDAO userDAO = new SQLUserDAO();
         String username = "username";
-        String password = "password";
+        String password = BCrypt.hashpw("password", BCrypt.gensalt());
         String email = "email";
         UserData userData = new UserData(username, password, email);
         userDAO.addUser(userData);
         UserData returnedUserData = userDAO.getUserData(username);
-        Assertions.assertEquals(username, returnedUserData.username());
-        Assertions.assertTrue(BCrypt.checkpw(password, returnedUserData.password()));
+        Assertions.assertEquals(userData, returnedUserData);
+    }
+
+    @Test
+    void addGame() throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+
+        GameData gameData = new GameData(null, null, null, "game", new ChessGame());
+        gameDAO.addGame(gameData);
     }
 }

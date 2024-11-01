@@ -17,8 +17,7 @@ public class SQLUserDAO implements UserDAO {
         var username = userData.username();
         var password = userData.password();
         var email = userData.email();
-        var hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        MySQLAccess.executeUpdate(statement, username, hashedPassword, email);
+        MySQLAccess.executeUpdate(statement, username, password, email);
     }
 
     @Override

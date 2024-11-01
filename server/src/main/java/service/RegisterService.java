@@ -3,6 +3,7 @@ package service;
 import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.BadRequestException;
 import dataaccess.exceptions.DataAccessException;
+import org.mindrot.jbcrypt.BCrypt;
 import results.RegisterResult;
 import model.AuthData;
 import model.UserData;
@@ -17,7 +18,8 @@ public class RegisterService extends Service {
         if (request.username() == null || request.password() == null || request.email() == null) {
             throw new BadRequestException("Error: bad request");
         }
-        UserData userData = new UserData(request.username(), request.password(), request.email());
+        String hashedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());;
+        UserData userData = new UserData(request.username(), hashedPassword, request.email());
         userDAO.addUser(userData);
         AuthData authData = createAuthData(request.username());
         authDAO.addAuthData(authData);
