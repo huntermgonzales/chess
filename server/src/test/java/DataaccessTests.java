@@ -1,4 +1,7 @@
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+import chess.InvalidMoveException;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
@@ -97,10 +100,45 @@ public class DataaccessTests {
     }
 
     @Test
-    void addGame() throws DataAccessException {
+    void addGame() {
         GameDAO gameDAO = new SQLGameDAO();
-
         GameData gameData = new GameData(null, null, null, "game", new ChessGame());
-        gameDAO.addGame(gameData);
+        Assertions.assertDoesNotThrow(() ->gameDAO.addGame(gameData));
+    }
+
+    @Test
+    void addAndRetrieveGame() throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        String gameName = "game";
+        ChessGame game = new ChessGame();
+        GameData gameData = new GameData(null, null, null, gameName, game);
+        int gameID = gameDAO.addGame(gameData);
+        gameData = new GameData(gameID, null, null, gameName, game);
+        Assertions.assertEquals(gameData, gameDAO.getGame(gameID));
+    }
+
+    @Test
+    void addGameNullName() {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData gameData = new GameData(1, null, null, null, new ChessGame());
+        Assertions.assertThrows(DataAccessException.class, ()->gameDAO.addGame(gameData));
+    }
+
+    @Test
+    void editGame() throws DataAccessException, InvalidMoveException {
+        GameDAO gameDAO = new SQLGameDAO();
+        ChessGame game = new ChessGame();
+        GameData gameData = new GameData(null, null, null, "game", game);
+        int gameID = gameDAO.addGame(gameData);
+        //game.makeMove(new ChessMove(new ChessPosition(2,3), new ChessPosition(3,3), null));
+        Assertions.assertDoesNotThrow(() -> gameDAO.updateGameData(new GameData(gameID, "user1",
+                null, "game", game)));
+    }
+
+    @Test
+    void editGameDoesNotExist() {
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData gameData = new GameData(1, null, null, "game", new ChessGame());
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGameData(gameData));
     }
 }

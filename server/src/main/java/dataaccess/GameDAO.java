@@ -10,8 +10,8 @@ public interface GameDAO extends DataAccess{
 
     public Integer addGame(GameData gameData) throws DataAccessException;
 
-    public GameData getGame(int gameID);
+    public GameData getGame(int gameID) throws DataAccessException;
 
-    public void updateGameData(GameData gameData);
+    public void updateGameData(GameData gameData) throws DataAccessException;
 
 }

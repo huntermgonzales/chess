@@ -24,14 +24,14 @@ public class MySQLAccess {
                     //TODO: set the other data types like game to be able to be stored
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
-                ps.executeUpdate();
+                int rowsAffected = ps.executeUpdate();
 
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
+                return rowsAffected;
 
-                return 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error: 500 unable to update database");
