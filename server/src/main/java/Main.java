@@ -1,11 +1,11 @@
 import chess.*;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccess;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import dataaccess.memoryDAO.MemoryAuthDAO;
 import dataaccess.memoryDAO.MemoryGameDAO;
 import dataaccess.memoryDAO.MemoryUserDAO;
+import dataaccess.sqlDAO.SQLAuthDAO;
+import dataaccess.sqlDAO.SQLGameDAO;
+import dataaccess.sqlDAO.SQLUserDAO;
 import server.Server;
 
 public class Main {
@@ -16,10 +16,12 @@ public class Main {
             port = Integer.parseInt(args[0]);
         }
 
-
         if (args.length >= 2 && args[1].equals("sql")) {
-            //TODO: put sql DAOS to each DAO
+            DataaccessConfig.initialize(true);
+        } else {
+            DataaccessConfig.initialize(false);
         }
+
         Server server = new Server();
         server.run(port);
 //        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);

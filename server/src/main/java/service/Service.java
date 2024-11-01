@@ -17,9 +17,9 @@ public abstract class Service {
 
 
     public Service() {
-        this.userDAO = new MemoryUserDAO();
-        this.authDAO = new MemoryAuthDAO();
-        this.gameDAO = new MemoryGameDAO();
+        this.userDAO = DataaccessConfig.getInstance().getUserDAO();
+        this.authDAO = DataaccessConfig.getInstance().getAuthDAO();
+        this.gameDAO = DataaccessConfig.getInstance().getGameDAO();
     }
 
     protected AuthData createAuthData(String username) throws DataAccessException {

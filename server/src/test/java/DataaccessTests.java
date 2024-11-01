@@ -1,6 +1,4 @@
 import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
 import chess.InvalidMoveException;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
@@ -130,7 +128,6 @@ public class DataaccessTests {
         ChessGame game = new ChessGame();
         GameData gameData = new GameData(null, null, null, "game", game);
         int gameID = gameDAO.addGame(gameData);
-        //game.makeMove(new ChessMove(new ChessPosition(2,3), new ChessPosition(3,3), null));
         Assertions.assertDoesNotThrow(() -> gameDAO.updateGameData(new GameData(gameID, "user1",
                 null, "game", game)));
     }

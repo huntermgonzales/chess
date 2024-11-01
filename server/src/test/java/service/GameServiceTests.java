@@ -1,9 +1,11 @@
 package service;
 
+import dataaccess.DataaccessConfig;
 import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.BadRequestException;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.UnauthorizedException;
+import org.junit.jupiter.api.BeforeAll;
 import results.CreateGameResult;
 import results.ListGamesResult;
 import results.RegisterResult;
@@ -14,6 +16,11 @@ import org.junit.jupiter.api.Test;
 import requests.*;
 
 public class GameServiceTests {
+
+    @BeforeAll
+    static void beforeAll() {
+        DataaccessConfig.initialize(false);
+    }
 
     @BeforeEach
     void beforeEach() throws DataAccessException {

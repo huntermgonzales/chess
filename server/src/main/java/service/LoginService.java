@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.UnauthorizedException;
+import org.mindrot.jbcrypt.BCrypt;
 import results.LoginResult;
 import model.AuthData;
 import model.UserData;
@@ -17,7 +18,7 @@ public class LoginService extends Service{
             throw new UnauthorizedException("Error: unauthorized");
         }
         UserData userData = userDAO.getUserData(request.username());
-        if (!Objects.equals(userData.password(), request.password())) {
+        if (!BCrypt.checkpw(request.password(), userData.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
         AuthData authData = createAuthData(request.username());
