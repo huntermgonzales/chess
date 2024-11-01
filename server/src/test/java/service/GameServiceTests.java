@@ -1,10 +1,10 @@
 package service;
 
 import dataaccess.DataaccessConfig;
-import dataaccess.AlreadyTakenException;
-import dataaccess.BadRequestException;
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import exceptions.AlreadyTakenException;
+import exceptions.BadRequestException;
+import exceptions.DataAccessException;
+import exceptions.UnauthorizedException;
 import org.junit.jupiter.api.BeforeAll;
 import results.CreateGameResult;
 import results.ListGamesResult;

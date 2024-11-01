@@ -1,7 +1,7 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import exceptions.DataAccessException;
+import exceptions.UnauthorizedException;
 import org.mindrot.jbcrypt.BCrypt;
 import results.LoginResult;
 import model.AuthData;

@@ -1,8 +1,8 @@
 package service;
 
 import dataaccess.*;
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import exceptions.DataAccessException;
+import exceptions.UnauthorizedException;
 import model.AuthData;
 
 import java.util.UUID;

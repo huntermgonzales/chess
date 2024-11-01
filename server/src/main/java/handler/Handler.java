@@ -1,10 +1,10 @@
 package handler;
 
 import com.google.gson.Gson;
-import dataaccess.AlreadyTakenException;
-import dataaccess.BadRequestException;
-import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import exceptions.AlreadyTakenException;
+import exceptions.BadRequestException;
+import exceptions.DataAccessException;
+import exceptions.UnauthorizedException;
 import results.ErrorResult;
 import spark.Response;
 
