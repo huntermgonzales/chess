@@ -1,11 +1,8 @@
 package service;
 
 import dataaccess.*;
-import dataaccess.exceptions.DataAccessException;
-import dataaccess.exceptions.UnauthorizedException;
-import dataaccess.memoryDAO.MemoryAuthDAO;
-import dataaccess.memoryDAO.MemoryGameDAO;
-import dataaccess.memoryDAO.MemoryUserDAO;
+import dataaccess.DataAccessException;
+import dataaccess.UnauthorizedException;
 import model.AuthData;
 
 import java.util.UUID;

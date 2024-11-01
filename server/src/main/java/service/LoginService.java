@@ -1,14 +1,12 @@
 package service;
 
-import dataaccess.exceptions.DataAccessException;
-import dataaccess.exceptions.UnauthorizedException;
+import dataaccess.DataAccessException;
+import dataaccess.UnauthorizedException;
 import org.mindrot.jbcrypt.BCrypt;
 import results.LoginResult;
 import model.AuthData;
 import model.UserData;
 import requests.LoginRequest;
-
-import java.util.Objects;
 
 public class LoginService extends Service{
 

@@ -1,8 +1,8 @@
 package service;
 
-import dataaccess.exceptions.AlreadyTakenException;
-import dataaccess.exceptions.BadRequestException;
-import dataaccess.exceptions.DataAccessException;
+import dataaccess.AlreadyTakenException;
+import dataaccess.BadRequestException;
+import dataaccess.DataAccessException;
 import org.mindrot.jbcrypt.BCrypt;
 import results.RegisterResult;
 import model.AuthData;

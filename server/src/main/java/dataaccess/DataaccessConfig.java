@@ -1,12 +1,5 @@
 package dataaccess;
 
-import dataaccess.memoryDAO.MemoryAuthDAO;
-import dataaccess.memoryDAO.MemoryGameDAO;
-import dataaccess.memoryDAO.MemoryUserDAO;
-import dataaccess.sqlDAO.SQLAuthDAO;
-import dataaccess.sqlDAO.SQLGameDAO;
-import dataaccess.sqlDAO.SQLUserDAO;
-
 public class DataaccessConfig {
     private static DataaccessConfig instance;
     private AuthDAO authDAO;

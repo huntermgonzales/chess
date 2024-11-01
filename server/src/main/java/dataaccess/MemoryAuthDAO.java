@@ -1,6 +1,5 @@
-package dataaccess.memoryDAO;
+package dataaccess;
 
-import dataaccess.AuthDAO;
 import model.AuthData;
 
 public class MemoryAuthDAO implements AuthDAO {

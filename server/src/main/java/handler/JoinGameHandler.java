@@ -2,7 +2,7 @@ package handler;
 
 import results.JoinGameResult;
 import com.google.gson.Gson;
-import dataaccess.exceptions.DataAccessException;
+import dataaccess.DataAccessException;
 import requests.JoinGameRequest;
 import service.JoinGameService;
 import spark.Request;

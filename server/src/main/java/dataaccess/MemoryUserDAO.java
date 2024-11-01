@@ -1,6 +1,5 @@
-package dataaccess.memoryDAO;
+package dataaccess;
 
-import dataaccess.UserDAO;
 import model.UserData;
 
 public class MemoryUserDAO implements UserDAO {

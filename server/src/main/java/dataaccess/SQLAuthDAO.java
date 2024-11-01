@@ -1,8 +1,5 @@
-package dataaccess.sqlDAO;
+package dataaccess;
 
-import com.google.gson.Gson;
-import dataaccess.AuthDAO;
-import dataaccess.exceptions.DataAccessException;
 import model.AuthData;
 
 import java.sql.ResultSet;

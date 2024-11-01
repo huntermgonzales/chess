@@ -1,6 +1,4 @@
-package dataaccess.sqlDAO;
-
-import dataaccess.exceptions.DataAccessException;
+package dataaccess;
 
 import java.sql.SQLException;
 
@@ -18,11 +16,15 @@ public class MySQLAccess {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-//                    else if (param instanceof PetType p) ps.setString(i + 1, p.toString());
-                    //TODO: set the other data types like game to be able to be stored
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    if (param instanceof String p) {
+                        ps.setString(i + 1, p);
+                    }
+                    else if (param instanceof Integer p) {
+                        ps.setInt(i + 1, p);
+                    }
+                    else if (param == null) {
+                        ps.setNull(i + 1, NULL);
+                    }
                 }
                 int rowsAffected = ps.executeUpdate();
 

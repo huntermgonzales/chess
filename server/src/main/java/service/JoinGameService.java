@@ -2,9 +2,9 @@ package service;
 
 import results.JoinGameResult;
 import chess.ChessGame;
-import dataaccess.exceptions.AlreadyTakenException;
-import dataaccess.exceptions.BadRequestException;
-import dataaccess.exceptions.DataAccessException;
+import dataaccess.AlreadyTakenException;
+import dataaccess.BadRequestException;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import requests.JoinGameRequest;

@@ -1,11 +1,4 @@
-import chess.*;
 import dataaccess.*;
-import dataaccess.memoryDAO.MemoryAuthDAO;
-import dataaccess.memoryDAO.MemoryGameDAO;
-import dataaccess.memoryDAO.MemoryUserDAO;
-import dataaccess.sqlDAO.SQLAuthDAO;
-import dataaccess.sqlDAO.SQLGameDAO;
-import dataaccess.sqlDAO.SQLUserDAO;
 import server.Server;
 
 public class Main {
