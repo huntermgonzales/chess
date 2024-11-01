@@ -31,7 +31,7 @@ public class DataaccessConfig {
 
     public static DataaccessConfig getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Config has not been initialized.");
+            instance = new DataaccessConfig(true);
         }
         return instance;
     }

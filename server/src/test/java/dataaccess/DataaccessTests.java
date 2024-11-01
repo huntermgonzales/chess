@@ -1,8 +1,7 @@
+package dataaccess;
+
 import chess.ChessGame;
 import chess.InvalidMoveException;
-import dataaccess.AuthDAO;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.sqlDAO.MySQLAccess;
 import dataaccess.sqlDAO.SQLAuthDAO;
