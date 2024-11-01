@@ -141,4 +141,36 @@ public class DataaccessTests {
         GameData gameData = new GameData(1, null, null, "game", new ChessGame());
         Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGameData(gameData));
     }
+
+    @Test
+    void listOneGame() throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        String gameName = "game";
+        ChessGame game = new ChessGame();
+        GameData gameData = new GameData(null, null, null, gameName, game);
+        int gameID = gameDAO.addGame(gameData);
+        gameData = new GameData(gameID, null, null, gameName, game);
+        Assertions.assertEquals(gameData, gameDAO.listAllGames().getFirst());
+    }
+
+    @Test
+    void listTwoGames() throws DataAccessException {
+        GameDAO gameDAO = new SQLGameDAO();
+        String gameName = "game";
+        ChessGame game = new ChessGame();
+        GameData gameData1 = new GameData(null, null, null, gameName, game);
+        int gameID1 = gameDAO.addGame(gameData1);
+        gameData1 = new GameData(gameID1, null, null, gameName, game);
+        GameData gameData2 = new GameData(null, null, null, gameName, game);
+        int gameID2 = gameDAO.addGame(gameData2);
+        gameData2 = new GameData(gameID2, null, null, gameName, game);
+        Assertions.assertEquals(gameData1, gameDAO.listAllGames().getFirst());
+        Assertions.assertEquals(gameData2, gameDAO.listAllGames().get(1));
+    }
+
+    @Test
+    void listGamesEmpty() {
+        GameDAO gameDAO = new SQLGameDAO();
+        Assertions.assertDoesNotThrow(() -> gameDAO.listAllGames());
+    }
 }

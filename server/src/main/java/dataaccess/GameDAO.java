@@ -6,7 +6,7 @@ import model.GameData;
 import java.util.List;
 
 public interface GameDAO extends DataAccess{
-    public List<GameData> listAllGames();
+    public List<GameData> listAllGames() throws DataAccessException;
 
     public Integer addGame(GameData gameData) throws DataAccessException;
 

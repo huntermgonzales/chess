@@ -9,13 +9,27 @@ import model.GameData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SQLGameDAO implements GameDAO {
 
     @Override
-    public List<GameData> listAllGames() {
-        return List.of();
+    public List<GameData> listAllGames() throws DataAccessException {
+        List<GameData> games = new ArrayList<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, gameJson FROM gameData";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        games.add(readGameData(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Error: unable to get data from database");
+        }
+        return games;
     }
 
     @Override
