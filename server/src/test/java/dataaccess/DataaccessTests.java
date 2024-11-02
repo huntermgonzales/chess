@@ -49,9 +49,9 @@ public class DataaccessTests {
     }
 
     @Test
-    void retrieveFalseAuthData() {
+    void retrieveFalseAuthData() throws DataAccessException {
         AuthDAO authDAO = new SQLAuthDAO();
-        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuthData("falseToken"));
+        Assertions.assertNull(authDAO.getAuthData("falseToken"));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class DataaccessTests {
         AuthData authData = new AuthData(authToken, "username");
         authDAO.addAuthData(authData);
         authDAO.deleteAuthData(authToken);
-        Assertions.assertThrows(DataAccessException.class,() -> authDAO.getAuthData(authToken));
+        Assertions.assertNull(authDAO.getAuthData(authToken));
     }
 
     @Test
@@ -108,10 +108,10 @@ public class DataaccessTests {
     }
 
     @Test
-    void getUserDoesNotExist() {
+    void getUserDoesNotExist() throws DataAccessException {
         UserDAO userDAO = new SQLUserDAO();
         String username = "username";
-        Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUserData(username));
+        Assertions.assertNull(userDAO.getUserData(username));
     }
 
     @Test
@@ -145,10 +145,10 @@ public class DataaccessTests {
     }
 
     @Test
-    void getGameDoesNotExist() {
+    void getGameDoesNotExist() throws DataAccessException {
         GameDAO gameDAO = new SQLGameDAO();
         int gameID = 11;
-        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.getGame(gameID));
+        Assertions.assertNull(gameDAO.getGame(gameID));
     }
 
     @Test

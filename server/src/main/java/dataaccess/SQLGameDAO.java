@@ -48,14 +48,13 @@ public class SQLGameDAO implements GameDAO {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readGameData(rs);
-                    } else {
-                        throw new DataAccessException("Error: game does not exist");
                     }
                 }
             }
         } catch (Exception e) {
             throw new DataAccessException("Error: unable to get data from database");
         }
+        return null;
     }
 
     private GameData readGameData(ResultSet rs) throws SQLException {
