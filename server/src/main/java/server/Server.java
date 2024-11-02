@@ -1,5 +1,8 @@
 package server;
 
+import dataaccess.DataaccessConfig;
+import dataaccess.MySQLAccess;
+import exceptions.DataAccessException;
 import handler.*;
 import spark.*;
 
@@ -7,7 +10,14 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-
+        if (!DataaccessConfig.isInitialized()) {
+            DataaccessConfig.initialize(true);
+            try {
+                new MySQLAccess();
+            } catch (DataAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.

@@ -29,6 +29,10 @@ public class DataaccessConfig {
         return instance;
     }
 
+    public static boolean isInitialized() {
+        return instance != null;
+    }
+
     public AuthDAO getAuthDAO() {
         return authDAO;
     }
