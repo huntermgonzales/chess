@@ -26,13 +26,14 @@ public class SQLUserDAO implements UserDAO {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readUserData(rs);
+                    } else {
+                        throw new DataAccessException("Error: data does not exist");
                     }
                 }
             }
         } catch (Exception e) {
             throw new DataAccessException("Error: unable to get data from database");
         }
-        return null;
     }
 
     @Override

@@ -28,6 +28,10 @@ public class DataaccessTests {
         new SQLGameDAO().deleteAll();
     }
 
+    @Test
+    void deleteAllAuthData() {
+        Assertions.assertDoesNotThrow(() -> new SQLAuthDAO().deleteAll());
+    }
 
     @Test
     void addAuthData() throws DataAccessException {
@@ -42,6 +46,12 @@ public class DataaccessTests {
         AuthData authData = new AuthData(authToken, "username");
         authDAO.addAuthData(authData);
         Assertions.assertEquals(authData, authDAO.getAuthData(authToken));
+    }
+
+    @Test
+    void retrieveFalseAuthData() {
+        AuthDAO authDAO = new SQLAuthDAO();
+        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuthData("falseToken"));
     }
 
     @Test
@@ -71,7 +81,12 @@ public class DataaccessTests {
         AuthData authData = new AuthData(authToken, "username");
         authDAO.addAuthData(authData);
         authDAO.deleteAuthData(authToken);
-        Assertions.assertNull(authDAO.getAuthData(authToken));
+        Assertions.assertThrows(DataAccessException.class,() -> authDAO.getAuthData(authToken));
+    }
+
+    @Test
+    void deleteAllUserData() {
+        Assertions.assertDoesNotThrow(() -> new SQLUserDAO().deleteAll());
     }
 
     @Test
@@ -90,6 +105,18 @@ public class DataaccessTests {
         userDAO.addUser(userData);
         UserData returnedUserData = userDAO.getUserData(username);
         Assertions.assertEquals(userData, returnedUserData);
+    }
+
+    @Test
+    void getUserDoesNotExist() {
+        UserDAO userDAO = new SQLUserDAO();
+        String username = "username";
+        Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUserData(username));
+    }
+
+    @Test
+    void deleteAllGameData() {
+        Assertions.assertDoesNotThrow(() -> new SQLGameDAO().deleteAll());
     }
 
     @Test
@@ -115,6 +142,13 @@ public class DataaccessTests {
         GameDAO gameDAO = new SQLGameDAO();
         GameData gameData = new GameData(1, null, null, null, new ChessGame());
         Assertions.assertThrows(DataAccessException.class, ()->gameDAO.addGame(gameData));
+    }
+
+    @Test
+    void getGameDoesNotExist() {
+        GameDAO gameDAO = new SQLGameDAO();
+        int gameID = 11;
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.getGame(gameID));
     }
 
     @Test

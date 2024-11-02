@@ -23,13 +23,14 @@ public class SQLAuthDAO implements AuthDAO {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readAuthData(rs);
+                    } else {
+                        throw new DataAccessException("Error: auth Data does not exist");
                     }
                 }
             }
         } catch (Exception e) {
             throw new DataAccessException("Error: unable to get data from database");
         }
-        return null;
     }
 
     @Override
