@@ -7,6 +7,7 @@ import requests.CreateGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.CreateGameResponse;
+import responses.ListGameResponse;
 import responses.LoginResponse;
 import responses.RegisterResponse;
 
@@ -54,6 +55,12 @@ public class ServerFacade {
         var method = "POST";
         var path = "/game";
         return makeRequest(method, path, request, authenticator, CreateGameResponse.class);
+    }
+
+    public ListGameResponse listGames(String authenticator) throws ResponseException {
+        var method = "GET";
+        var path = "/game";
+        return makeRequest(method, path, null, authenticator, ListGameResponse.class);
     }
 
 

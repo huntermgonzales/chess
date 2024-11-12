@@ -7,6 +7,7 @@ import requests.CreateGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.CreateGameResponse;
+import responses.ListGameResponse;
 import server.Server;
 import server.ServerFacade;
 
@@ -91,7 +92,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void CreateGameSuccess() throws ResponseException {
+    void createGameSuccess() throws ResponseException {
         var registerRequest = new RegisterRequest("username", "password", "email");
         AuthData authData = serverFacade.register(registerRequest);
         CreateGameRequest createGameRequest = new CreateGameRequest("my game");
@@ -101,8 +102,18 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void CreateGameNotAllowed() {
+    void createGameNotAllowed() {
         CreateGameRequest createGameRequest = new CreateGameRequest("my game");
         Assertions.assertThrows(ResponseException.class, () -> serverFacade.createGame(createGameRequest, "fake auth"));
+    }
+
+    @Test
+    void listGameSuccess() throws ResponseException {
+        var registerRequest = new RegisterRequest("username", "password", "email");
+        AuthData authData = serverFacade.register(registerRequest);
+        CreateGameRequest createGameRequest = new CreateGameRequest("my game");
+        serverFacade.createGame(createGameRequest, authData.authToken());
+        ListGameResponse response = Assertions.assertDoesNotThrow( () -> serverFacade.listGames(authData.authToken()));
+        Assertions.assertFalse(response.games().isEmpty());
     }
 }
