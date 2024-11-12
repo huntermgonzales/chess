@@ -100,5 +100,9 @@ public class ServerFacadeTests {
         Assertions.assertNotNull(response);
     }
 
-
+    @Test
+    void CreateGameNotAllowed() {
+        CreateGameRequest createGameRequest = new CreateGameRequest("my game");
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.createGame(createGameRequest, "fake auth"));
+    }
 }
