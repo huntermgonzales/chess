@@ -26,29 +26,35 @@ public class ServerFacade {
     public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
         var method = "POST";
         var path = "/user";
-        return makeRequest(method, path, registerRequest, RegisterResponse.class);
+        return makeRequest(method, path, registerRequest, null, RegisterResponse.class);
     }
 
     public void clear() throws ResponseException {
         var method = "DELETE";
         var path = "/db";
-        makeRequest(method, path, null, null);
+        makeRequest(method, path, null, null, null);
     }
 
     public LoginResponse login(LoginRequest request) throws ResponseException {
         var method = "POST";
         var path = "/session";
-        return makeRequest(method, path, request, LoginResponse.class);
+        return makeRequest(method, path, request, null, LoginResponse.class);
+    }
+
+    public void logout(String authenticator) throws ResponseException {
+        var method = "DELETE";
+        var path = "/session";
+        makeRequest(method, path, null, authenticator, null);
     }
 
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, String authenticator, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-
+            http.setRequestProperty("Authorization", authenticator);
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);

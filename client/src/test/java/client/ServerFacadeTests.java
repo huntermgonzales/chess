@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.LoginResponse;
+import responses.RegisterResponse;
 import server.Server;
 import server.ServerFacade;
 
@@ -61,4 +62,20 @@ public class ServerFacadeTests {
         LoginResponse response = Assertions.assertDoesNotThrow( () -> serverFacade.login(loginRequest));
         Assertions.assertTrue(response.authToken().length() > 10);
     }
+
+    @Test
+    void loginUserNotExist() {
+        var loginRequest = new LoginRequest("badUsername", "password");
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.login(loginRequest));
+    }
+
+    @Test
+    void logoutUserSuccess() throws ResponseException {
+        var request = new RegisterRequest("username", "password", "email");
+        RegisterResponse response = serverFacade.register(request);
+        Assertions.assertDoesNotThrow(() -> serverFacade.logout(response.authToken()));
+    }
+
+
+
 }
