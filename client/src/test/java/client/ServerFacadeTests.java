@@ -1,11 +1,12 @@
 package client;
 
 import exceptions.ResponseException;
+import model.AuthData;
 import org.junit.jupiter.api.*;
+import requests.CreateGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
-import responses.LoginResponse;
-import responses.RegisterResponse;
+import responses.CreateGameResponse;
 import server.Server;
 import server.ServerFacade;
 
@@ -39,7 +40,7 @@ public class ServerFacadeTests {
     public void registerSuccess() {
         String username  = "username";
         var request = new RegisterRequest(username, "password", "email");
-        var response = Assertions.assertDoesNotThrow(() -> serverFacade.register(request));
+        AuthData response = Assertions.assertDoesNotThrow(() -> serverFacade.register(request));
         Assertions.assertEquals(username, response.username());
         Assertions.assertTrue(response.authToken().length() > 10);
     }
@@ -59,7 +60,7 @@ public class ServerFacadeTests {
         var registerRequest = new RegisterRequest(username, password, "email");
         serverFacade.register(registerRequest);
         var loginRequest = new LoginRequest(username, password);
-        LoginResponse response = Assertions.assertDoesNotThrow( () -> serverFacade.login(loginRequest));
+        AuthData response = Assertions.assertDoesNotThrow( () -> serverFacade.login(loginRequest));
         Assertions.assertTrue(response.authToken().length() > 10);
     }
 
@@ -72,7 +73,7 @@ public class ServerFacadeTests {
     @Test
     void logoutUserSuccess() throws ResponseException {
         var request = new RegisterRequest("username", "password", "email");
-        RegisterResponse response = serverFacade.register(request);
+        AuthData response = serverFacade.register(request);
         Assertions.assertDoesNotThrow(() -> serverFacade.logout(response.authToken()));
     }
 
@@ -84,8 +85,20 @@ public class ServerFacadeTests {
     @Test
     void logoutTwice() throws ResponseException {
         var request = new RegisterRequest("username", "password", "email");
-        RegisterResponse response = serverFacade.register(request);
+        AuthData response = serverFacade.register(request);
         serverFacade.logout(response.authToken());
         Assertions.assertThrows(ResponseException.class, () -> serverFacade.logout(response.authToken()));
     }
+
+    @Test
+    void CreateGameSuccess() throws ResponseException {
+        var registerRequest = new RegisterRequest("username", "password", "email");
+        AuthData authData = serverFacade.register(registerRequest);
+        CreateGameRequest createGameRequest = new CreateGameRequest("my game");
+        CreateGameResponse response =  Assertions.assertDoesNotThrow(
+                () -> serverFacade.createGame(createGameRequest, authData.authToken()));
+        Assertions.assertNotNull(response);
+    }
+
+
 }

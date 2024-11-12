@@ -2,8 +2,11 @@ package server;
 
 import com.google.gson.Gson;
 import exceptions.ResponseException;
+import model.AuthData;
+import requests.CreateGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.CreateGameResponse;
 import responses.LoginResponse;
 import responses.RegisterResponse;
 
@@ -23,10 +26,10 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
+    public AuthData register(RegisterRequest registerRequest) throws ResponseException {
         var method = "POST";
         var path = "/user";
-        return makeRequest(method, path, registerRequest, null, RegisterResponse.class);
+        return makeRequest(method, path, registerRequest, null, AuthData.class);
     }
 
     public void clear() throws ResponseException {
@@ -35,16 +38,22 @@ public class ServerFacade {
         makeRequest(method, path, null, null, null);
     }
 
-    public LoginResponse login(LoginRequest request) throws ResponseException {
+    public AuthData login(LoginRequest request) throws ResponseException {
         var method = "POST";
         var path = "/session";
-        return makeRequest(method, path, request, null, LoginResponse.class);
+        return makeRequest(method, path, request, null, AuthData.class);
     }
 
     public void logout(String authenticator) throws ResponseException {
         var method = "DELETE";
         var path = "/session";
         makeRequest(method, path, null, authenticator, null);
+    }
+
+    public CreateGameResponse createGame(CreateGameRequest request, String authenticator) throws ResponseException {
+        var method = "POST";
+        var path = "/game";
+        return makeRequest(method, path, request, authenticator, CreateGameResponse.class);
     }
 
 
