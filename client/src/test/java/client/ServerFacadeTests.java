@@ -76,6 +76,16 @@ public class ServerFacadeTests {
         Assertions.assertDoesNotThrow(() -> serverFacade.logout(response.authToken()));
     }
 
+    @Test
+    void logoutInvalidAuth() {
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.logout("This is not an authToken"));
+    }
 
-
+    @Test
+    void logoutTwice() throws ResponseException {
+        var request = new RegisterRequest("username", "password", "email");
+        RegisterResponse response = serverFacade.register(request);
+        serverFacade.logout(response.authToken());
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.logout(response.authToken()));
+    }
 }
