@@ -6,6 +6,10 @@ import exceptions.BadRequestException;
 import exceptions.DataAccessException;
 import exceptions.UnauthorizedException;
 import org.junit.jupiter.api.BeforeAll;
+import requests.CreateGameRequest;
+import requests.JoinGameRequest;
+import requests.LoginRequest;
+import requests.RegisterRequest;
 import results.CreateGameResult;
 import results.ListGamesResult;
 import results.RegisterResult;
@@ -13,7 +17,6 @@ import chess.ChessGame;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.*;
 
 public class GameServiceTests {
 
