@@ -2,7 +2,9 @@ package client;
 
 import exceptions.ResponseException;
 import org.junit.jupiter.api.*;
+import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.LoginResponse;
 import server.Server;
 import server.ServerFacade;
 
@@ -38,6 +40,7 @@ public class ServerFacadeTests {
         var request = new RegisterRequest(username, "password", "email");
         var response = Assertions.assertDoesNotThrow(() -> serverFacade.register(request));
         Assertions.assertEquals(username, response.username());
+        Assertions.assertTrue(response.authToken().length() > 10);
     }
 
     @Test
@@ -48,4 +51,14 @@ public class ServerFacadeTests {
     }
 
 
+    @Test
+    void loginSuccess() throws ResponseException {
+        String username  = "username";
+        String password = "password";
+        var registerRequest = new RegisterRequest(username, password, "email");
+        serverFacade.register(registerRequest);
+        var loginRequest = new LoginRequest(username, password);
+        LoginResponse response = Assertions.assertDoesNotThrow( () -> serverFacade.login(loginRequest));
+        Assertions.assertTrue(response.authToken().length() > 10);
+    }
 }

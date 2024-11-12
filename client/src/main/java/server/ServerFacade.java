@@ -2,7 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import exceptions.ResponseException;
+import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.LoginResponse;
 import responses.RegisterResponse;
 
 import java.io.IOException;
@@ -31,6 +33,12 @@ public class ServerFacade {
         var method = "DELETE";
         var path = "/db";
         makeRequest(method, path, null, null);
+    }
+
+    public LoginResponse login(LoginRequest request) throws ResponseException {
+        var method = "POST";
+        var path = "/session";
+        return makeRequest(method, path, request, LoginResponse.class);
     }
 
 
