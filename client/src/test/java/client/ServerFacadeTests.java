@@ -1,9 +1,11 @@
 package client;
 
+import chess.ChessGame;
 import exceptions.ResponseException;
 import model.AuthData;
 import org.junit.jupiter.api.*;
 import requests.CreateGameRequest;
+import requests.JoinGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.CreateGameResponse;
@@ -116,4 +118,28 @@ public class ServerFacadeTests {
         ListGameResponse response = Assertions.assertDoesNotThrow( () -> serverFacade.listGames(authData.authToken()));
         Assertions.assertFalse(response.games().isEmpty());
     }
+
+    @Test
+    void joinGameSuccess() throws ResponseException {
+        var registerRequest = new RegisterRequest("username", "password", "email");
+        AuthData authData = serverFacade.register(registerRequest);
+        CreateGameRequest createGameRequest = new CreateGameRequest("my game");
+        CreateGameResponse createGameResponse =  serverFacade.createGame(createGameRequest, authData.authToken());
+        JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, createGameResponse.gameID());
+        Assertions.assertDoesNotThrow(() -> serverFacade.joinGame(request, authData.authToken()));
+    }
+
+    @Test
+    void joinAsWhiteTwice() throws ResponseException {
+        var registerRequest1 = new RegisterRequest("username", "password", "email");
+        AuthData authData1 = serverFacade.register(registerRequest1);
+        var registerRequest2 = new RegisterRequest("user2", "password", "email2");
+        AuthData authData2 = serverFacade.register(registerRequest2);
+        CreateGameRequest createGameRequest = new CreateGameRequest("my game");
+        CreateGameResponse createGameResponse =  serverFacade.createGame(createGameRequest, authData1.authToken());
+        JoinGameRequest request = new JoinGameRequest(ChessGame.TeamColor.WHITE, createGameResponse.gameID());
+        serverFacade.joinGame(request, authData1.authToken());
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.joinGame(request, authData2.authToken()));
+    }
+
 }
