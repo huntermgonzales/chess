@@ -29,7 +29,8 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
-                default -> throw new ResponseException(400, "invalid code");
+
+                default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
@@ -43,6 +44,7 @@ public class ChessClient {
             String email = params[2];
             AuthData authData = server.register(new RegisterRequest(username, password, email));
             authToken = authData.authToken();
+            status = UserStatus.SIGNED_IN;
             return "Successfully registered\n";
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
@@ -54,9 +56,32 @@ public class ChessClient {
             String password = params[1];
             AuthData authData = server.login(new LoginRequest(username, password));
             authToken = authData.authToken();
+            status = UserStatus.SIGNED_IN;
             return "Successfully logged in\n";
         }
         throw new ResponseException(400, "Expected: <username> <password>");
+    }
+
+
+    public String help() throws ResponseException {
+        if (status == UserStatus.SIGNED_OUT) {
+            return """
+                    To see this menu: "h", "help"
+                    To register as a new user: "register" <username> <password> <email>
+                    To login as an existing user: "login" <username> <password>
+                    To exit the program: "q", "quit"
+                    """;
+        } else if (status == UserStatus.SIGNED_IN) {
+            return """
+                    To see this menu: "h", "help"
+                    To logout: "logout"
+                    To create a game: "create" <game name>
+                    To list all created games: "list"
+                    To play a game: "play" <game ID> <Black|White>
+                    To observe a game: "observe" <game ID>
+                    """;
+        }
+        throw new ResponseException(400, "Something went wrong");
     }
 
 
