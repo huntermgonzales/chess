@@ -28,6 +28,7 @@ public class ChessClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
+                case "login" -> login(params);
                 default -> throw new ResponseException(400, "invalid code");
             };
         } catch (ResponseException ex) {
