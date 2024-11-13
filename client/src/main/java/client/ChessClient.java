@@ -29,7 +29,8 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
-
+                case "logout" -> logout();
+                case "quit", "q" -> "quit";
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -38,7 +39,10 @@ public class ChessClient {
     }
 
     public String register(String... params) throws ResponseException {
-        if (params.length >= 3 && status == UserStatus.SIGNED_OUT) {
+        if (status != UserStatus.SIGNED_OUT) {
+            throw new ResponseException(400, "You are already signed in");
+        }
+        if (params.length >= 3) {
             String username = params[0];
             String password = params[1];
             String email = params[2];
@@ -51,7 +55,10 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException {
-        if (params.length == 2 && status == UserStatus.SIGNED_OUT) {
+        if (status != UserStatus.SIGNED_OUT) {
+            throw new ResponseException(400, "You are already signed in");
+        }
+        if (params.length == 2) {
             String username = params[0];
             String password = params[1];
             AuthData authData = server.login(new LoginRequest(username, password));
@@ -62,6 +69,15 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <username> <password>");
     }
 
+    public String logout() throws ResponseException {
+        if (status != UserStatus.SIGNED_OUT && authToken != null) {
+            server.logout(authToken);
+            authToken = null;
+            status = UserStatus.SIGNED_OUT;
+            return "Successfully logged out\n";
+        }
+        throw new ResponseException(400, "Error: you were not logged in");
+    }
 
     public String help() throws ResponseException {
         if (status == UserStatus.SIGNED_OUT) {
