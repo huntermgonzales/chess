@@ -107,9 +107,11 @@ public class ChessClient {
         int count = 1;
         for (GameData game: games) {
             outputString.append(count).append(": ").append(game.toString()).append('\n');
+            count++;
         }
         return outputString.toString();
     }
+
 
     public String help() throws ResponseException {
         if (status == UserStatus.SIGNED_OUT) {
