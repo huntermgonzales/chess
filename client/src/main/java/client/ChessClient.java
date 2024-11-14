@@ -125,6 +125,9 @@ public class ChessClient {
             throw new ResponseException(400, "Expected integer for game ID but got string");
         }
         List<GameData> games = server.listGames(authToken).games();
+        if (gameID > games.size()) {
+            throw new ResponseException(400, "invalid gameID");
+        }
         return games.get(gameID - 1).gameID();
     }
 
@@ -152,7 +155,6 @@ public class ChessClient {
         }
         if (params.length >= 1) {
             int gameID = getGameIDToInt(params[0]);
-            server.joinGame(new JoinGameRequest(null, gameID), authToken);
             return "You are now observing the game";
         }
         throw new ResponseException(400, "Expected: <gameID>");
