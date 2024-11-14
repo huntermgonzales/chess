@@ -1,9 +1,11 @@
 package client;
 
+import chess.ChessGame;
 import exceptions.ResponseException;
 import model.AuthData;
 import model.GameData;
 import requests.CreateGameRequest;
+import requests.JoinGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.ListGameResponse;
@@ -37,6 +39,7 @@ public class ChessClient {
                 case "quit", "q" -> "quit";
                 case "create" -> createGame(params);
                 case "list" -> listGames();
+                case "join" -> joinGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -92,7 +95,7 @@ public class ChessClient {
         if (params.length >= 1) {
             String gameName = params[0];
             server.createGame(new CreateGameRequest(gameName), authToken);
-            return "Successfully created game " + gameName;
+            return "Successfully created game " + gameName + "\n";
         }
         throw new ResponseException(400, "expected: <gameName>");
     }
@@ -112,28 +115,54 @@ public class ChessClient {
         return outputString.toString();
     }
 
+    private int userToInternalGameId(int userGameID) throws ResponseException {
+        List<GameData> games = server.listGames(authToken).games();
+        return games.get(userGameID - 1).gameID();
+    }
+
+    public String joinGame(String... params) throws ResponseException {
+        if (status != UserStatus.SIGNED_IN) {
+            throw new ResponseException(400, "You are not signed in");
+        }
+        if (params.length >= 2) {
+            ChessGame.TeamColor playerColor = switch (params[0].toLowerCase()) {
+                case "black" -> ChessGame.TeamColor.BLACK;
+                case "white" -> ChessGame.TeamColor.WHITE;
+                default -> throw new ResponseException(400, "team color must be black or white");
+            };
+            int gameID;
+            try {
+                gameID = Integer.parseInt(params[1]);
+            } catch (NumberFormatException e) {
+                throw new ResponseException(400, "Expected integer for game ID but got string");
+            }
+            gameID = userToInternalGameId(gameID);
+            server.joinGame(new JoinGameRequest(playerColor, gameID), authToken);
+            //change status to in game
+            return "successfully joined game\n";
+        }
+        throw new ResponseException(400, "Expected: <black|white> <Game ID>");
+    }
 
     public String help() throws ResponseException {
         if (status == UserStatus.SIGNED_OUT) {
             return """
-                    To see this menu: "h", "help"
-                    To register as a new user: "register" <username> <password> <email>
-                    To login as an existing user: "login" <username> <password>
-                    To exit the program: "q", "quit"
+                    To see this menu:               "h", "help"
+                    To register as a new user:      "register" <username> <password> <email>
+                    To login as an existing user:   "login" <username> <password>
+                    To exit the program:            "q", "quit"
                     """;
         } else if (status == UserStatus.SIGNED_IN) {
             return """
-                    To see this menu: "h", "help"
-                    To logout: "logout"
-                    To create a game: "create" <game name>
-                    To list all created games: "list"
-                    To play a game: "play" <game ID> <Black|White>
-                    To observe a game: "observe" <game ID>
+                    To see this menu:           "h", "help"
+                    To logout:                  "logout"
+                    To create a game:           "create" <game name>
+                    To list all created games:  "list"
+                    To play a game:             "play" <Black|White> <game ID>
+                    To observe a game:          "observe" <game ID>
                     """;
         }
         throw new ResponseException(400, "Something went wrong");
     }
-
-
 
 }
