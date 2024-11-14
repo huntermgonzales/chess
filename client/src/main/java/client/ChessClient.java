@@ -2,12 +2,16 @@ package client;
 
 import exceptions.ResponseException;
 import model.AuthData;
+import model.GameData;
+import requests.CreateGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.ListGameResponse;
 import server.ServerFacade;
 import ui.UserStatus;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ChessClient {
     private final String url;
@@ -31,6 +35,8 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "quit", "q" -> "quit";
+                case "create" -> createGame(params);
+                case "list" -> listGames();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -77,6 +83,32 @@ public class ChessClient {
             return "Successfully logged out\n";
         }
         throw new ResponseException(400, "Error: you were not logged in");
+    }
+
+    public String createGame(String... params) throws ResponseException {
+        if (status == UserStatus.SIGNED_OUT) {
+            throw new ResponseException(400, "Error: you are not logged in");
+        }
+        if (params.length >= 1) {
+            String gameName = params[0];
+            server.createGame(new CreateGameRequest(gameName), authToken);
+            return "Successfully created game " + gameName;
+        }
+        throw new ResponseException(400, "expected: <gameName>");
+    }
+
+    public String listGames() throws ResponseException {
+        if (status != UserStatus.SIGNED_IN) {
+            throw new ResponseException(400, "You are not signed in");
+        }
+        ListGameResponse response = server.listGames(authToken);
+        List<GameData> games = response.games();
+        StringBuilder outputString =  new StringBuilder();
+        int count = 1;
+        for (GameData game: games) {
+            outputString.append(count).append(": ").append(game.toString()).append('\n');
+        }
+        return outputString.toString();
     }
 
     public String help() throws ResponseException {

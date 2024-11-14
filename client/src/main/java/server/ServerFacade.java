@@ -7,10 +7,7 @@ import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
-import responses.CreateGameResponse;
-import responses.ListGameResponse;
-import responses.LoginResponse;
-import responses.RegisterResponse;
+import responses.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,7 +110,14 @@ public class ServerFacade {
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
-            throw new ResponseException(status, "failure: " + status);
+            String errorMessage = switch (status) {
+                case 400 -> "Bad request: invalid syntax";
+                case 401 -> "Unauthorized";
+                case 403 -> "Forbidden: already taken";
+                case 500 -> "Data access error";
+                default -> "status: " + status; // Generic message for other status codes
+            };
+            throw new ResponseException(status, errorMessage);
         }
     }
 

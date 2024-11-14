@@ -33,7 +33,7 @@ public class Repl {
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE + result);
             } catch (Throwable e) {
                 var msg = e.toString();
-                System.out.println(msg);
+                System.out.println(msg + "\n");
             }
         }
         System.out.println();
