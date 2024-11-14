@@ -40,6 +40,7 @@ public class ChessClient {
                 case "create" -> createGame(params);
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -58,7 +59,7 @@ public class ChessClient {
             AuthData authData = server.register(new RegisterRequest(username, password, email));
             authToken = authData.authToken();
             status = UserStatus.SIGNED_IN;
-            return "Successfully registered\n";
+            return "Successfully registered";
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
     }
@@ -73,7 +74,7 @@ public class ChessClient {
             AuthData authData = server.login(new LoginRequest(username, password));
             authToken = authData.authToken();
             status = UserStatus.SIGNED_IN;
-            return "Successfully logged in\n";
+            return "Successfully logged in";
         }
         throw new ResponseException(400, "Expected: <username> <password>");
     }
@@ -83,7 +84,7 @@ public class ChessClient {
             server.logout(authToken);
             authToken = null;
             status = UserStatus.SIGNED_OUT;
-            return "Successfully logged out\n";
+            return "Successfully logged out";
         }
         throw new ResponseException(400, "Error: you were not logged in");
     }
@@ -95,7 +96,7 @@ public class ChessClient {
         if (params.length >= 1) {
             String gameName = params[0];
             server.createGame(new CreateGameRequest(gameName), authToken);
-            return "Successfully created game " + gameName + "\n";
+            return "Successfully created game " + gameName;
         }
         throw new ResponseException(400, "expected: <gameName>");
     }
@@ -109,15 +110,22 @@ public class ChessClient {
         StringBuilder outputString =  new StringBuilder();
         int count = 1;
         for (GameData game: games) {
-            outputString.append(count).append(": ").append(game.toString()).append('\n');
+            outputString.append(count).append(": ").append(game.toString());
             count++;
         }
         return outputString.toString();
     }
 
-    private int userToInternalGameId(int userGameID) throws ResponseException {
+
+    private int getGameIDToInt(String gameIDString) throws ResponseException {
+        int gameID;
+        try {
+            gameID = Integer.parseInt(gameIDString);
+        } catch (NumberFormatException e) {
+            throw new ResponseException(400, "Expected integer for game ID but got string");
+        }
         List<GameData> games = server.listGames(authToken).games();
-        return games.get(userGameID - 1).gameID();
+        return games.get(gameID - 1).gameID();
     }
 
     public String joinGame(String... params) throws ResponseException {
@@ -130,18 +138,24 @@ public class ChessClient {
                 case "white" -> ChessGame.TeamColor.WHITE;
                 default -> throw new ResponseException(400, "team color must be black or white");
             };
-            int gameID;
-            try {
-                gameID = Integer.parseInt(params[1]);
-            } catch (NumberFormatException e) {
-                throw new ResponseException(400, "Expected integer for game ID but got string");
-            }
-            gameID = userToInternalGameId(gameID);
+            int gameID = getGameIDToInt(params[1]);
             server.joinGame(new JoinGameRequest(playerColor, gameID), authToken);
             //change status to in game
-            return "successfully joined game\n";
+            return "successfully joined game";
         }
         throw new ResponseException(400, "Expected: <black|white> <Game ID>");
+    }
+
+    public String observeGame(String... params) throws ResponseException {
+        if (status != UserStatus.SIGNED_IN) {
+            throw new ResponseException(400, "You are not signed in");
+        }
+        if (params.length >= 1) {
+            int gameID = getGameIDToInt(params[0]);
+            server.joinGame(new JoinGameRequest(null, gameID), authToken);
+            return "You are now observing the game";
+        }
+        throw new ResponseException(400, "Expected: <gameID>");
     }
 
     public String help() throws ResponseException {

@@ -30,10 +30,10 @@ public class Repl {
 
             try {
                 result = client.eval(line);
-                System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE + result);
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + result);
             } catch (Throwable e) {
                 var msg = e.toString();
-                System.out.println(msg + "\n");
+                System.out.println(msg);
             }
         }
         System.out.println();

@@ -27,7 +27,7 @@ public class JoinGameService extends Service{
             }
             newGameData = new GameData(gameData.gameID(), authData.username(), gameData.blackUsername(), gameData.gameName(), gameData.game());
         } else {
-            throw new BadRequestException("Error: bad request");
+            newGameData = gameData;
         }
         return newGameData;
     }
