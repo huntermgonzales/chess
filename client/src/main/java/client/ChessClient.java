@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import exceptions.ResponseException;
 import model.AuthData;
@@ -10,6 +11,7 @@ import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.ListGameResponse;
 import server.ServerFacade;
+import ui.ChessBoardArtist;
 import ui.UserStatus;
 
 import java.util.Arrays;
@@ -144,7 +146,11 @@ public class ChessClient {
             int gameID = getGameIDToInt(params[1]);
             server.joinGame(new JoinGameRequest(playerColor, gameID), authToken);
             //change status to in game
-            return "successfully joined game";
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            String boards = "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n" +
+                    new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.BLACK) + "\n";
+            return boards;
         }
         throw new ResponseException(400, "Expected: <black|white> <Game ID>");
     }
@@ -155,7 +161,10 @@ public class ChessClient {
         }
         if (params.length >= 1) {
             int gameID = getGameIDToInt(params[0]);
-            return "You are now observing the game";
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            String boards = "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n";
+            return boards;
         }
         throw new ResponseException(400, "Expected: <gameID>");
     }

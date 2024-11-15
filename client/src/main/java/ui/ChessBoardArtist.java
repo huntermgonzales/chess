@@ -60,7 +60,7 @@ public class ChessBoardArtist {
             drawing.append(EscapeSequences.SET_BG_COLOR_MAGENTA + EscapeSequences.SET_TEXT_COLOR_WHITE + " ").
                     append(row).append(" ").append(EscapeSequences.RESET_BG_COLOR);
             for (int col = start; col <= 8 && col >= 1; col += inc) {
-                drawing.append(squareShade).append(getPieceString(board, row, col)).append(EscapeSequences.RESET_BG_COLOR);
+                drawing.append(squareShade).append(getPieceString(board, row, 9 - col)).append(EscapeSequences.RESET_BG_COLOR);
                 squareShade = changeShade(squareShade);
             }
             drawing.append(borderColor).append(" ").append(row).append(" ").append(EscapeSequences.SET_BG_COLOR_BLACK).append("\n");
@@ -72,6 +72,7 @@ public class ChessBoardArtist {
         } else {
             drawing.append("    h  g  f  e  d  c  b  a    ");
         }
+        drawing.append(EscapeSequences.RESET_BG_COLOR);
         return drawing.toString();
     }
 }
