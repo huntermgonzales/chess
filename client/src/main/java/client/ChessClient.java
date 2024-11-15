@@ -112,7 +112,7 @@ public class ChessClient {
         StringBuilder outputString =  new StringBuilder();
         int count = 1;
         for (GameData game: games) {
-            outputString.append(count).append(": ").append(game.toString());
+            outputString.append(count).append(": ").append(game.toString()).append("\n");
             count++;
         }
         return outputString.toString();
@@ -127,7 +127,7 @@ public class ChessClient {
             throw new ResponseException(400, "Expected integer for game ID but got string");
         }
         List<GameData> games = server.listGames(authToken).games();
-        if (gameID > games.size()) {
+        if (gameID > games.size() || gameID < 1) {
             throw new ResponseException(400, "invalid gameID");
         }
         return games.get(gameID - 1).gameID();

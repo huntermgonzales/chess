@@ -5,7 +5,7 @@ public record GameData(Integer gameID, String whiteUsername, String blackUsernam
     @Override
     public String toString() {
         return  "gameName='" + gameName + '\'' +
-                ", blackUsername='" + blackUsername + '\'' +
-                ", whiteUsername='" + whiteUsername + '\'';
+                ", blackUsername='" + (blackUsername != null ? blackUsername : "Available") + '\'' +
+                ", whiteUsername='" + (whiteUsername != null ? whiteUsername : "Available") + '\'';
     }
 }
