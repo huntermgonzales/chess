@@ -9,7 +9,9 @@ public class BoardTest {
 
     @Test
     void drawBoard() {
-        String drawing = new ChessBoardArtist().drawBoard(new ChessBoard(), ChessGame.TeamColor.WHITE);
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        String drawing = new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE);
         System.out.print(drawing);
     }
 
@@ -20,7 +22,7 @@ public class BoardTest {
         board.resetBoard();
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
-                System.out.print(artist.getPieceString(board, i, j));
+                System.out.print(artist.getPieceString(board, i, 8 - j));
             }
             System.out.print("\n");
         }
