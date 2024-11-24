@@ -10,10 +10,10 @@ public class Main {
             port = Integer.parseInt(args[0]);
         }
 
-        if (args.length >= 2 && args[1].equalsIgnoreCase("SQL")) {
-            DataaccessConfig.initialize(true);
-        } else {
+        if (args.length >= 2 && args[1].equalsIgnoreCase("Memory")) {
             DataaccessConfig.initialize(false);
+        } else {
+            DataaccessConfig.initialize(true);
         }
 
         Server server = new Server();

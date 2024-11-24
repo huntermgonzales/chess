@@ -183,7 +183,7 @@ public class ChessClient {
                     To logout:                  "logout"
                     To create a game:           "create" <game name>
                     To list all created games:  "list"
-                    To play a game:             "play" <Black|White> <game ID>
+                    To join a game:             "join" <Black|White> <game ID>
                     To observe a game:          "observe" <game ID>
                     """;
         }
