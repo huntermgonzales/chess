@@ -11,6 +11,10 @@ public class ServerNotification extends ServerMessage{
         this.message = message;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public String toString() {
         if (message == null) {

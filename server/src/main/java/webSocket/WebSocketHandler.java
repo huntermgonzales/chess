@@ -45,7 +45,7 @@ public class WebSocketHandler {
         connections.add(authToken, gameID, session);
         String username = authDAO.getAuthData(authToken).username();
         ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.LOAD_GAME);
-        notification.addMessage(String.format("%s and his game goes here", username));
+        notification.addMessage(new Gson().toJson(gameDAO.getGame(gameID).game()));
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, notification, gameID);
     }
 

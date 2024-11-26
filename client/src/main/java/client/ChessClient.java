@@ -153,7 +153,7 @@ public class ChessClient {
             String boards = "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n" +
                     new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.BLACK) + "\n";
             webSocket = new WebSocketFacade(url);
-            webSocket.send("Test");
+            webSocket.joinGame(gameID, authToken);
             return boards;
         }
         throw new ResponseException(400, "Expected: <black|white> <Game ID>");

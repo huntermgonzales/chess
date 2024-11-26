@@ -1,6 +1,13 @@
 package server;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+import com.google.gson.Gson;
 import exceptions.ResponseException;
+import ui.ChessBoardArtist;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
+import websocket.messages.ServerNotification;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -24,7 +31,12 @@ public class WebSocketFacade extends Endpoint {
 
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 public void onMessage(String message) {
-                    System.out.println(message);
+                    var receivedMessage = new Gson().fromJson(message, ServerNotification.class);
+                    String result = switch (receivedMessage.getServerMessageType()) {
+                        case LOAD_GAME -> receiveLoadGame(receivedMessage.getMessage());
+                        default -> "wrong";
+                    };
+                    System.out.print(result);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -32,7 +44,17 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+    public String receiveLoadGame(String message) {
+        ChessBoard board = new Gson().fromJson(message, ChessBoard.class);
+        return "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n";
+    }
+
     public void send(String msg) throws Exception {
         this.session.getBasicRemote().sendText(msg);
+    }
+
+    public void joinGame(int gameID, String authToken) throws Exception {
+        var command  = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        send(new Gson().toJson(command));
     }
 }
