@@ -10,6 +10,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
+import websocket.messages.ServerNotification;
 
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        System.out.println("Received: " + message);
         try {
             switch (command.getCommandType()) {
                 case CONNECT -> joinGame(command.getAuthToken(), command.getGameID(), session);
@@ -42,9 +44,9 @@ public class WebSocketHandler {
     private void joinGame(String authToken, int gameID, Session session) throws DataAccessException, IOException {
         connections.add(authToken, gameID, session);
         String username = authDAO.getAuthData(authToken).username();
-        ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        message.addMessage(String.format("%s has joined the game", username));
-        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, message, gameID);
+        ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.LOAD_GAME);
+        notification.addMessage(String.format("%s and his game goes here", username));
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, notification, gameID);
     }
 
     private void leaveGame(String authToken, int gameID) {

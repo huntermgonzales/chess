@@ -1,5 +1,6 @@
 package webSocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 
@@ -39,26 +40,12 @@ public class ConnectionManager {
         switch (receivers) {
             case SELF -> broadcastToSelf(authToken, message, gameID);
         }
-//        for (var c : connections.values()) {
-//            if (c.session.isOpen()) {
-//                if (!c.authToken.equals(authToken)) {
-//                    c.send(message.toString());
-//                }
-//            } else {
-//                removeList.add(c);
-//            }
-//        }
-//
-//        // Clean up any connections that were left open.
-//        for (var c : removeList) {
-//            connections.remove(c.authToken);
-//        }
     }
 
     public void broadcastToSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
         Connection connection = gameConnections.get(gameID).get(authToken);
         if (connection.session.isOpen()) {
-            connection.send(message.toString());
+            connection.send(new Gson().toJson(message));
         }
     }
 

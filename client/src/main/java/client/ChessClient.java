@@ -11,6 +11,7 @@ import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.ListGameResponse;
 import server.ServerFacade;
+import server.WebSocketFacade;
 import ui.ChessBoardArtist;
 import ui.UserStatus;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class ChessClient {
     private final String url;
     private final ServerFacade server;
+    private WebSocketFacade webSocket;
     private UserStatus status = UserStatus.SIGNED_OUT;
     private String authToken = null;
 
@@ -45,7 +47,7 @@ public class ChessClient {
                 case "observe" -> observeGame(params);
                 default -> help();
             };
-        } catch (ResponseException ex) {
+        } catch (Exception ex) {
             return ex.getMessage();
         }
     }
@@ -133,7 +135,7 @@ public class ChessClient {
         return games.get(gameID - 1).gameID();
     }
 
-    public String joinGame(String... params) throws ResponseException {
+    public String joinGame(String... params) throws Exception {
         if (status != UserStatus.SIGNED_IN) {
             throw new ResponseException(400, "You are not signed in");
         }
@@ -150,6 +152,8 @@ public class ChessClient {
             board.resetBoard();
             String boards = "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n" +
                     new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.BLACK) + "\n";
+            webSocket = new WebSocketFacade(url);
+            webSocket.send("Test");
             return boards;
         }
         throw new ResponseException(400, "Expected: <black|white> <Game ID>");
