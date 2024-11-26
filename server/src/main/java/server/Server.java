@@ -5,9 +5,15 @@ import dataaccess.MySQLAccess;
 import exceptions.DataAccessException;
 import handler.*;
 import spark.*;
+import webSocket.WebSocketHandler;
 
 public class Server {
 
+    private final WebSocketHandler webSocketHandler;
+
+    public Server() {
+        this.webSocketHandler = new WebSocketHandler();
+    }
     public int run(int desiredPort) {
         Spark.port(desiredPort);
         if (!DataaccessConfig.isInitialized()) {
@@ -21,6 +27,9 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+
+        Spark.webSocket("/ws", webSocketHandler);
+
         Spark.post("/user", (req, res) -> new RegisterHandler().handleRegister(req, res));      //register
         Spark.post("/session", (req, res) -> new LoginHandler().handleLogin(req, res));         //login
         Spark.delete("/session", (req, res) -> new LogoutHandler().handleLogout(req, res));     //logout
