@@ -35,20 +35,26 @@ public class ConnectionManager {
     }
 
     public void broadcast(String authToken, BroadcastReceivers receivers, ServerMessage message, Integer gameID) throws IOException {
-        var removeList = new ArrayList<Connection>();
-        var connections = gameConnections.get(gameID);
         switch (receivers) {
             case SELF -> broadcastToSelf(authToken, message, gameID);
+            case ALL_BUT_SELF -> broadcastToAllButSelf(authToken, message, gameID);
         }
     }
 
-    public void broadcastToSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
+    private void broadcastToSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
         Connection connection = gameConnections.get(gameID).get(authToken);
         if (connection.session.isOpen()) {
             connection.send(new Gson().toJson(message));
         }
     }
 
-
-
+    private void broadcastToAllButSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
+        ConcurrentHashMap<String, Connection> connections = gameConnections.get(gameID);
+        for (Connection connection : connections.values()) {
+            if (!connection.authToken.equals(authToken) && connection.session.isOpen()) {
+                connection.send(new Gson().toJson(message));
+            }
+        }
     }
+
+}

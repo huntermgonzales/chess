@@ -148,13 +148,9 @@ public class ChessClient {
             int gameID = getGameIDToInt(params[1]);
             server.joinGame(new JoinGameRequest(playerColor, gameID), authToken);
             //change status to in game
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            String boards = "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n" +
-                    new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.BLACK) + "\n";
             webSocket = new WebSocketFacade(url);
-            webSocket.joinGame(gameID, authToken);
-            return boards;
+            webSocket.joinGame(gameID, authToken, playerColor);
+            return "Successfully joined game as " + playerColor;
         }
         throw new ResponseException(400, "Expected: <black|white> <Game ID>");
     }

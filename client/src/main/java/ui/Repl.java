@@ -40,7 +40,7 @@ public class Repl {
 
     }
 
-    private void printPrompt() {
+    public void printPrompt() {
         System.out.print(EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + ">>> " + EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
     }
 

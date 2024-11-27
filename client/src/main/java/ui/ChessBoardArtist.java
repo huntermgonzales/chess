@@ -45,7 +45,7 @@ public class ChessBoardArtist {
         String squareShade = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
         int inc;
         int start;
-        if (perspective == ChessGame.TeamColor.WHITE) {
+        if (perspective == ChessGame.TeamColor.WHITE || perspective == null) {
             inc = -1;
             start = 8;
             drawing.append("    a  b  c  d  e  f  g  h    ");
