@@ -12,10 +12,11 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
-    ChessBoard board = new ChessBoard();
+    ChessBoard board;
     TeamColor teamTurn = TeamColor.WHITE;
 
     public ChessGame() {
+        board = new ChessBoard();
         board.resetBoard();
     }
 

@@ -1,5 +1,7 @@
 package chess;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,9 +21,7 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        return "{" +
-                Arrays.deepToString(squares) +
-                '}';
+        return new Gson().toJson(this);
     }
 
     @Override

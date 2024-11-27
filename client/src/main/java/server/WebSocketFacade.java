@@ -45,7 +45,7 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public String receiveLoadGame(String message) {
-        ChessBoard board = new Gson().fromJson(message, ChessBoard.class);
+        ChessBoard board = new Gson().fromJson(message, ChessGame.class).getBoard();
         return "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n";
     }
 
