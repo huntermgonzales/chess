@@ -155,16 +155,15 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <black|white> <Game ID>");
     }
 
-    public String observeGame(String... params) throws ResponseException {
+    public String observeGame(String... params) throws Exception {
         if (status != UserStatus.SIGNED_IN) {
             throw new ResponseException(400, "You are not signed in");
         }
         if (params.length >= 1) {
             int gameID = getGameIDToInt(params[0]);
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            String boards = "\n" + new ChessBoardArtist().drawBoard(board, ChessGame.TeamColor.WHITE) + "\n";
-            return boards;
+            webSocket = new WebSocketFacade(url);
+            webSocket.joinGame(gameID, authToken, null);
+            return "You are now observing the game";
         }
         throw new ResponseException(400, "Expected: <gameID>");
     }
