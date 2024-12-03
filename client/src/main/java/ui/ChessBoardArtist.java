@@ -73,6 +73,7 @@ public class ChessBoardArtist {
             drawing.append("    h  g  f  e  d  c  b  a    ");
         }
         drawing.append(EscapeSequences.RESET_BG_COLOR);
+
         return drawing.toString();
     }
 }

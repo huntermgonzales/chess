@@ -24,11 +24,16 @@ public class ChessClient {
     private WebSocketFacade webSocket;
     private UserStatus status = UserStatus.SIGNED_OUT;
     private String authToken = null;
+    ChessGame game;
 
 
     public ChessClient(String serverUrl) {
         url = serverUrl;
         server = new ServerFacade(url);
+    }
+
+    public void saveGameData(ChessGame game) {
+        this.game = game;
     }
 
     public String eval(String input) {
@@ -147,8 +152,8 @@ public class ChessClient {
             };
             int gameID = getGameIDToInt(params[1]);
             server.joinGame(new JoinGameRequest(playerColor, gameID), authToken);
-            //change status to in game
-            webSocket = new WebSocketFacade(url);
+            status = UserStatus.PLAYING_GAME;
+            webSocket = new WebSocketFacade(url, this);
             webSocket.joinGame(gameID, authToken, playerColor);
             return "Successfully joined game as " + playerColor;
         }
@@ -161,8 +166,9 @@ public class ChessClient {
         }
         if (params.length >= 1) {
             int gameID = getGameIDToInt(params[0]);
-            webSocket = new WebSocketFacade(url);
+            webSocket = new WebSocketFacade(url, this);
             webSocket.joinGame(gameID, authToken, null);
+            status = UserStatus.OBSERVING_GAME;
             return "You are now observing the game";
         }
         throw new ResponseException(400, "Expected: <gameID>");
@@ -184,6 +190,28 @@ public class ChessClient {
                     To list all created games:  "list"
                     To join a game:             "join" <Black|White> <game ID>
                     To observe a game:          "observe" <game ID>
+                    """;
+        } else if (status == UserStatus.PLAYING_GAME) {
+            return """
+                    To see this menu:           "h", "help"
+                    To redraw the chess board:  "redraw"
+                    To Leave the game:          "leave"
+                    To resign:                  "resign"
+                    To highlight legal moves:   "highlight" <chess position>
+                    To make a move:             "move" <start position> <end position>
+                    
+                    Note: The positions should be input as number then letter.
+                    For example you can type "move 2D 4D" to move the white pawn
+                    """;
+        } else if (status == UserStatus.OBSERVING_GAME) {
+            return """
+                    To see this menu:           "h", "help"
+                    To redraw the chess board:  "redraw"
+                    To leave the game:          "leave"
+                    To highlight legal moves:   "highlight" <chess position>
+                    
+                    Note: The positions should be input as number then letter.
+                    For example you can type "highlight 2D" to show moves for the white pawn
                     """;
         }
         throw new ResponseException(400, "Something went wrong");

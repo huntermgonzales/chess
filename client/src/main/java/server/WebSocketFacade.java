@@ -2,6 +2,7 @@ package server;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import client.ChessClient;
 import com.google.gson.Gson;
 import exceptions.ResponseException;
 import ui.ChessBoardArtist;
@@ -23,11 +24,13 @@ public class WebSocketFacade extends Endpoint {
     }
 
     ChessGame.TeamColor teamColor;
+    ChessClient chessClient;
 
     public Session session;
 
-    public WebSocketFacade(String url) throws Exception {
+    public WebSocketFacade(String url, ChessClient chessClient) throws Exception {
         try {
+            this.chessClient = chessClient;
             url = url.replace("http", "ws");
             URI uri = new URI(url + "/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -43,6 +46,7 @@ public class WebSocketFacade extends Endpoint {
                     };
                     System.out.print("\n" + EscapeSequences.SET_TEXT_COLOR_BLUE + result + "\n" +
                             EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + ">>> " + EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
+                    System.out.flush();
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -52,6 +56,7 @@ public class WebSocketFacade extends Endpoint {
 
     private String receiveLoadGame(String message) {
         LoadGameMessage gameMessage = new Gson().fromJson(message, LoadGameMessage.class);
+        chessClient.saveGameData(gameMessage.getGame());
         ChessBoard board = gameMessage.getGame().getBoard();
         return "\n" + new ChessBoardArtist().drawBoard(board, teamColor) + "\n";
     }
