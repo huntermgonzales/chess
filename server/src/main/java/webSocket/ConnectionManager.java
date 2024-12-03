@@ -2,6 +2,7 @@ package webSocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.ErrorMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -26,7 +27,8 @@ public class ConnectionManager {
 
     public void remove(String authToken, Integer gameID) {
         var connections = gameConnections.get(gameID);
-        if (connections != null) {
+        if (connections != null && connections.get(authToken) != null) {
+            connections.get(authToken).session.close();
             connections.remove(authToken);
             if (connections.isEmpty()) {
                 gameConnections.remove(gameID);

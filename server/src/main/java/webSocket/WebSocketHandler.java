@@ -6,11 +6,14 @@ import dataaccess.AuthDAO;
 import dataaccess.DataaccessConfig;
 import dataaccess.GameDAO;
 import exceptions.DataAccessException;
+import exceptions.UnauthorizedException;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 import websocket.messages.ServerNotification;
@@ -43,8 +46,25 @@ public class WebSocketHandler {
         }
     }
 
+    private void sendErrorMessage(String message, String authToken, int gameID) throws IOException {
+        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR);
+        errorMessage.setErrorMessage(message);
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, errorMessage, gameID);
+        connections.remove(authToken, gameID);
+    }
+
     private void joinGame(String authToken, int gameID, Session session) throws DataAccessException, IOException {
         connections.add(authToken, gameID, session);
+        //checks if the authToken is valid
+        if (authDAO.getAuthData(authToken) == null) {
+            String message = "Error: you do not have permission to do this";
+            sendErrorMessage(message, authToken, gameID);
+        }
+
+        if (gameDAO.getGame(gameID) == null) {
+            String message = "Error: invalid game ID";
+            sendErrorMessage(message, authToken, gameID);
+        }
 
         //Load Game notification
         LoadGameMessage message = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME);
