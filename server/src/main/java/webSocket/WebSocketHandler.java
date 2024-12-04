@@ -19,6 +19,7 @@ import websocket.messages.ServerMessage;
 import websocket.messages.ServerNotification;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -46,24 +47,22 @@ public class WebSocketHandler {
         }
     }
 
-    private void sendErrorMessage(String message, String authToken, int gameID) throws IOException {
-        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR);
-        errorMessage.setErrorMessage(message);
-        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, errorMessage, gameID);
-        connections.remove(authToken, gameID);
-    }
 
     private void joinGame(String authToken, int gameID, Session session) throws DataAccessException, IOException {
         connections.add(authToken, gameID, session);
+
         //checks if the authToken is valid
         if (authDAO.getAuthData(authToken) == null) {
             String message = "Error: you do not have permission to do this";
             sendErrorMessage(message, authToken, gameID);
+            return;
         }
 
+        //checks if gameID is valid
         if (gameDAO.getGame(gameID) == null) {
             String message = "Error: invalid game ID";
             sendErrorMessage(message, authToken, gameID);
+            return;
         }
 
         //Load Game notification
@@ -74,6 +73,11 @@ public class WebSocketHandler {
 
         //send notification to everyone else
         String username = authDAO.getAuthData(authToken).username();
+        ServerNotification notification = createServerNotification(gameData, username);
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, notification, gameID);
+    }
+
+    private ServerNotification createServerNotification(GameData gameData, String username) {
         ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
         String color;
         if (gameData.blackUsername().equals(username) && gameData.whiteUsername().equals(username)) {
@@ -86,10 +90,53 @@ public class WebSocketHandler {
             color = "an observer";
         }
         notification.addMessage(String.format("%s has joined the game as %s", username, color));
-        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, notification, gameID);
+        return notification;
     }
 
-    private void leaveGame(String authToken, int gameID) {
+    private void leaveGame(String authToken, int gameID) throws DataAccessException, IOException {
+        //checks if the authToken is valid
+        AuthData authData = authDAO.getAuthData(authToken);
+        if (authData == null) {
+            String message = "Error: you do not have permission to do this";
+            sendErrorMessage(message, authToken, gameID);
+            return;
+        }
+
+        //checks if gameID is valid
+        if (gameDAO.getGame(gameID) == null) {
+            String message = "Error: invalid game ID";
+            sendErrorMessage(message, authToken, gameID);
+            return;
+        }
+        GameData gameData = gameDAO.getGame(gameID);
+        GameData updatedGame = updateUsers(gameID, gameData, authData);
+        gameDAO.updateGameData(updatedGame);
+
+        //create a message
+        ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
+        notification.addMessage(String.format("%s has left the game", authData.username()));
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, notification, gameID);
+
+        connections.remove(authToken, gameID);
+    }
+
+    private GameData updateUsers(int gameID, GameData gameData, AuthData authData) {
+        GameData updatedGame;
+        //figures out which color the requesting player is
+        if (Objects.equals(gameData.whiteUsername(), authData.username())) {
+            updatedGame = new GameData(gameID, null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+        } else if (Objects.equals(gameData.blackUsername(), authData.username())) {
+            updatedGame = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+        } else {
+            updatedGame = gameData;  //observing player does not need to be removed
+        }
+        return updatedGame;
+    }
+
+    private void sendErrorMessage(String message, String authToken, int gameID) throws IOException {
+        ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR);
+        errorMessage.setErrorMessage(message);
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, errorMessage, gameID);
         connections.remove(authToken, gameID);
     }
 }
