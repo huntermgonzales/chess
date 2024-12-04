@@ -126,7 +126,7 @@ public class WebSocketHandler {
         if (Objects.equals(gameData.whiteUsername(), authData.username())) {
             updatedGame = new GameData(gameID, null, gameData.blackUsername(), gameData.gameName(), gameData.game());
         } else if (Objects.equals(gameData.blackUsername(), authData.username())) {
-            updatedGame = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+            updatedGame = new GameData(gameID, gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
         } else {
             updatedGame = gameData;  //observing player does not need to be removed
         }

@@ -50,6 +50,7 @@ public class ChessClient {
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
                 case "observe" -> observeGame(params);
+                case "leave" -> leaveGame(params);
                 default -> help();
             };
         } catch (Exception ex) {
@@ -95,12 +96,12 @@ public class ChessClient {
             status = UserStatus.SIGNED_OUT;
             return "Successfully logged out";
         }
-        throw new ResponseException(400, "Error: you were not logged in");
+        throw new ResponseException(400, "Error: you were not logged in or are currently playing a game");
     }
 
     public String createGame(String... params) throws ResponseException {
-        if (status == UserStatus.SIGNED_OUT) {
-            throw new ResponseException(400, "Error: you are not logged in");
+        if (status != UserStatus.SIGNED_IN) {
+            throw new ResponseException(400, "Error: you are not logged in or are already in a game");
         }
         if (params.length >= 1) {
             String gameName = params[0];
@@ -112,7 +113,7 @@ public class ChessClient {
 
     public String listGames() throws ResponseException {
         if (status != UserStatus.SIGNED_IN) {
-            throw new ResponseException(400, "You are not signed in");
+            throw new ResponseException(400, "You are not signed in or are already in a game");
         }
         ListGameResponse response = server.listGames(authToken);
         List<GameData> games = response.games();
@@ -142,7 +143,7 @@ public class ChessClient {
 
     public String joinGame(String... params) throws Exception {
         if (status != UserStatus.SIGNED_IN) {
-            throw new ResponseException(400, "You are not signed in");
+            throw new ResponseException(400, "You are not signed in or are already in a game");
         }
         if (params.length >= 2) {
             ChessGame.TeamColor playerColor = switch (params[0].toLowerCase()) {
@@ -162,7 +163,7 @@ public class ChessClient {
 
     public String observeGame(String... params) throws Exception {
         if (status != UserStatus.SIGNED_IN) {
-            throw new ResponseException(400, "You are not signed in");
+            throw new ResponseException(400, "You are not signed in or are already in a game");
         }
         if (params.length >= 1) {
             int gameID = getGameIDToInt(params[0]);
@@ -172,6 +173,15 @@ public class ChessClient {
             return "You are now observing the game";
         }
         throw new ResponseException(400, "Expected: <gameID>");
+    }
+
+    public String leaveGame(String... params) throws Exception {
+        if (status != UserStatus.PLAYING_GAME && status != UserStatus.OBSERVING_GAME) {
+            throw new ResponseException(400, "You cannot leave a game you are not playing or observing");
+        }
+        webSocket.leaveGame(authToken);
+        status = UserStatus.SIGNED_IN;
+        return "You have left the game";
     }
 
     public String help() throws ResponseException {

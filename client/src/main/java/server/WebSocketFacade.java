@@ -7,8 +7,8 @@ import com.google.gson.Gson;
 import exceptions.ResponseException;
 import ui.ChessBoardArtist;
 import ui.EscapeSequences;
-import ui.Repl;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 import websocket.messages.ServerNotification;
@@ -25,6 +25,7 @@ public class WebSocketFacade extends Endpoint {
 
     ChessGame.TeamColor teamColor;
     ChessClient chessClient;
+    int gameID;
 
     public Session session;
 
@@ -42,6 +43,7 @@ public class WebSocketFacade extends Endpoint {
                     String result = switch (receivedMessage.getServerMessageType()) {
                         case LOAD_GAME -> receiveLoadGame(message);
                         case NOTIFICATION -> receiveNotification(message);
+                        case ERROR -> receiveErrorMessage(message);
                         default -> "wrong";
                     };
                     System.out.print("\n" + EscapeSequences.SET_TEXT_COLOR_BLUE + result + "\n" +
@@ -66,13 +68,24 @@ public class WebSocketFacade extends Endpoint {
         return notification.getMessage();
     }
 
+    private String receiveErrorMessage(String message) {
+        ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
+        return errorMessage.getErrorMessage();
+    }
+
     public void send(String msg) throws Exception {
         this.session.getBasicRemote().sendText(msg);
     }
 
     public void joinGame(int gameID, String authToken, ChessGame.TeamColor teamColor) throws Exception {
         this.teamColor = teamColor;
+        this.gameID = gameID;
         var command  = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        send(new Gson().toJson(command));
+    }
+
+    public void leaveGame(String authToken) throws Exception {
+        var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
         send(new Gson().toJson(command));
     }
 }
