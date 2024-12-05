@@ -99,7 +99,9 @@ public class WebSocketHandler {
     }
 
     private void leaveGame(String authToken, int gameID) throws DataAccessException, IOException {
-        verifyData(authToken, gameID);
+        if (verifyData(authToken, gameID)) {
+            return;
+        }
 
         AuthData authData = authDAO.getAuthData(authToken);
         GameData gameData = gameDAO.getGame(gameID);
@@ -115,7 +117,9 @@ public class WebSocketHandler {
     }
 
     private void makeMove(String authToken, int gameID, String message) throws IOException, DataAccessException {
-        verifyData(authToken, gameID);
+        if (verifyData(authToken, gameID)) {
+            return;
+        }
         MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
         AuthData authData = authDAO.getAuthData(authToken);
         ChessMove chessMove = command.getChessMove();
@@ -143,21 +147,23 @@ public class WebSocketHandler {
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, serverNotification, gameID);
     }
 
-    private void verifyData(String authToken, int gameID) throws IOException, DataAccessException {
+    //returns true if the data threw an error, and false otherwise
+    private boolean verifyData(String authToken, int gameID) throws IOException, DataAccessException {
         //checks if the authToken is valid
         AuthData authData = authDAO.getAuthData(authToken);
         if (authData == null) {
             String message = "Error: you do not have permission to do this";
             sendErrorMessage(message, authToken, gameID);
-            return;
+            return true;
         }
 
         //checks if gameID is valid
         if (gameDAO.getGame(gameID) == null) {
             String message = "Error: invalid game ID";
             sendErrorMessage(message, authToken, gameID);
-            return;
+            return true;
         }
+        return false;
     }
 
     private GameData updateUsers(int gameID, GameData gameData, AuthData authData) {

@@ -1,7 +1,6 @@
 package client;
 
-import chess.ChessGame;
-import chess.ChessPosition;
+import chess.*;
 import exceptions.ResponseException;
 import model.AuthData;
 import model.GameData;
@@ -54,6 +53,7 @@ public class ChessClient {
                 case "leave" -> leaveGame();
                 case "redraw" -> redrawBoard();
                 case "highlight" -> highlightPossibleMoves(params);
+                case "move" -> makeMove(params);
                 default -> help();
             };
         } catch (Exception ex) {
@@ -204,6 +204,37 @@ public class ChessClient {
         return new ChessBoardArtist().highlightBoard(game, color, position);
     }
 
+    public String makeMove(String... params) throws Exception {
+        if (params.length < 2) {
+            throw new ResponseException(400, "Please format your move like this: move 2D 3D");
+        }else if (status != UserStatus.PLAYING_GAME) {
+            throw new ResponseException(400, "You must be playing a game to make a move");
+        }else if (game.getTeamTurn() != color) {
+            throw new ResponseException(400, "You can only make a move on your turn");
+        }
+
+
+        ChessPosition startPosition = convertToChessPosition(params[0]);
+        ChessPosition endPosition = convertToChessPosition(params[1]);
+        ChessPiece.PieceType promotionType;
+        String promotionString;
+        if (params.length > 2) {
+            promotionString = params[2];
+            promotionType = ChessPiece.stringToPieceType(promotionString);
+        } else {
+            promotionType = null;
+        }
+        ChessMove move = new ChessMove(startPosition, endPosition, promotionType);
+
+        ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
+        if (piece == null || piece.getTeamColor() != game.getTeamTurn()) {
+            throw new ResponseException(400, "invalid move");
+        }
+
+        webSocket.makeMove(authToken, move);
+        return "your have moved your piece"; //TODO: specify the move
+    }
+
     private ChessPosition convertToChessPosition(String input) throws ResponseException {
         if (input.length() != 2) {
             throw new ResponseException(400, "please format your move like the following: highlight 2D");
@@ -217,6 +248,7 @@ public class ChessClient {
         }
         return new ChessPosition(row, col);
     }
+
 
     public String help() throws ResponseException {
         if (status == UserStatus.SIGNED_OUT) {

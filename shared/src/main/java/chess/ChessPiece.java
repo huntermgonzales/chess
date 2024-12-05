@@ -56,6 +56,19 @@ public class ChessPiece {
         PAWN
     }
 
+    public static PieceType stringToPieceType(String typeAsString) {
+        typeAsString = typeAsString.toLowerCase();
+        return switch (typeAsString) {
+            case "king" -> PieceType.KING;
+            case "queen" -> PieceType.QUEEN;
+            case "bishop" -> PieceType.BISHOP;
+            case "knight" -> PieceType.KNIGHT;
+            case "rook" -> PieceType.ROOK;
+            case "pawn" -> PieceType.PAWN;
+            default -> null;
+        };
+    }
+
     /**
      * @return Which team this chess piece belongs to
      */

@@ -2,11 +2,13 @@ package server;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
 import client.ChessClient;
 import com.google.gson.Gson;
 import exceptions.ResponseException;
 import ui.ChessBoardArtist;
 import ui.EscapeSequences;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -85,6 +87,12 @@ public class WebSocketFacade extends Endpoint {
 
     public void leaveGame(String authToken) throws Exception {
         var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+        send(new Gson().toJson(command));
+    }
+
+    public void makeMove(String authToken, ChessMove move) throws Exception {
+        var command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID);
+        command.setChessMove(move);
         send(new Gson().toJson(command));
     }
 }
