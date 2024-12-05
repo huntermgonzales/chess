@@ -25,6 +25,7 @@ public class ConnectionManager {
         gameConnections.computeIfAbsent(gameID, k -> new ConcurrentHashMap<>()).put(authToken, connection);
     }
 
+
     public void remove(String authToken, Integer gameID) {
         var connections = gameConnections.get(gameID);
         if (connections != null && connections.get(authToken) != null) {
@@ -47,21 +48,31 @@ public class ConnectionManager {
     private void broadcastToEveryone(ServerMessage message, int gameID) throws IOException {
         ConcurrentHashMap<String, Connection> connections = gameConnections.get(gameID);
         for (Connection connection : connections.values()) {
-            connection.send(new Gson().toJson(message));
+            if (connection.session.isOpen()) {
+                connection.send(new Gson().toJson(message));
+            }else {
+                connections.remove(connection.authToken);
+            }
         }
     }
     private void broadcastToSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
         Connection connection = gameConnections.get(gameID).get(authToken);
         if (connection.session.isOpen()) {
             connection.send(new Gson().toJson(message));
+        } else {
+            gameConnections.get(gameID).remove(authToken);
         }
     }
 
     private void broadcastToAllButSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
         ConcurrentHashMap<String, Connection> connections = gameConnections.get(gameID);
         for (Connection connection : connections.values()) {
-            if (!connection.authToken.equals(authToken) && connection.session.isOpen()) {
-                connection.send(new Gson().toJson(message));
+            if (!connection.authToken.equals(authToken)) {
+                if (connection.session.isOpen()) {
+                    connection.send(new Gson().toJson(message));
+                }else {
+                    connections.remove(connection.authToken);
+                }
             }
         }
     }
