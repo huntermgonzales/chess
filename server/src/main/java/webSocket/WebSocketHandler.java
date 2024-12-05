@@ -1,6 +1,9 @@
 package webSocket;
 
+import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.DataaccessConfig;
@@ -12,6 +15,7 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -41,6 +45,7 @@ public class WebSocketHandler {
             switch (command.getCommandType()) {
                 case CONNECT -> joinGame(command.getAuthToken(), command.getGameID(), session);
                 case LEAVE -> leaveGame(command.getAuthToken(), command.getGameID());
+                case MAKE_MOVE -> makeMove(command.getAuthToken(), command.getGameID(), message);
             }
         }catch (DataAccessException e) {
             session.getRemote().sendString("Unable to connect");
@@ -94,6 +99,51 @@ public class WebSocketHandler {
     }
 
     private void leaveGame(String authToken, int gameID) throws DataAccessException, IOException {
+        verifyData(authToken, gameID);
+
+        AuthData authData = authDAO.getAuthData(authToken);
+        GameData gameData = gameDAO.getGame(gameID);
+        GameData updatedGame = updateUsers(gameID, gameData, authData);
+        gameDAO.updateGameData(updatedGame);
+
+        //create a message
+        ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
+        notification.addMessage(String.format("%s has left the game", authData.username()));
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, notification, gameID);
+
+        connections.remove(authToken, gameID);
+    }
+
+    private void makeMove(String authToken, int gameID, String message) throws IOException, DataAccessException {
+        verifyData(authToken, gameID);
+        MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
+        AuthData authData = authDAO.getAuthData(authToken);
+        ChessMove chessMove = command.getChessMove();
+
+        GameData gameData = gameDAO.getGame(gameID);
+        ChessGame game = gameData.game();
+        try {
+            game.makeMove(chessMove);
+        } catch (InvalidMoveException e) {
+            String errorMessage = "Error: Invalid move";
+            sendErrorMessage(errorMessage, authToken, gameID);
+            return;
+        }
+        GameData updatedGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(),
+                gameData.gameName(), game);
+        gameDAO.updateGameData(updatedGameData);
+
+        LoadGameMessage loadGameMessage = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        loadGameMessage.setGame(game);
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.EVERYONE, loadGameMessage, gameID);
+
+        ServerNotification serverNotification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
+        //TODO: actually describe the move
+        serverNotification.addMessage(String.format("%s has moved the piece", authData.username()));
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, serverNotification, gameID);
+    }
+
+    private void verifyData(String authToken, int gameID) throws IOException, DataAccessException {
         //checks if the authToken is valid
         AuthData authData = authDAO.getAuthData(authToken);
         if (authData == null) {
@@ -108,16 +158,6 @@ public class WebSocketHandler {
             sendErrorMessage(message, authToken, gameID);
             return;
         }
-        GameData gameData = gameDAO.getGame(gameID);
-        GameData updatedGame = updateUsers(gameID, gameData, authData);
-        gameDAO.updateGameData(updatedGame);
-
-        //create a message
-        ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
-        notification.addMessage(String.format("%s has left the game", authData.username()));
-        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, notification, gameID);
-
-        connections.remove(authToken, gameID);
     }
 
     private GameData updateUsers(int gameID, GameData gameData, AuthData authData) {
@@ -139,4 +179,5 @@ public class WebSocketHandler {
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, errorMessage, gameID);
         connections.remove(authToken, gameID);
     }
+
 }

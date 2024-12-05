@@ -40,9 +40,16 @@ public class ConnectionManager {
         switch (receivers) {
             case SELF -> broadcastToSelf(authToken, message, gameID);
             case ALL_BUT_SELF -> broadcastToAllButSelf(authToken, message, gameID);
+            case EVERYONE -> broadcastToEveryone(message, gameID);
         }
     }
 
+    private void broadcastToEveryone(ServerMessage message, int gameID) throws IOException {
+        ConcurrentHashMap<String, Connection> connections = gameConnections.get(gameID);
+        for (Connection connection : connections.values()) {
+            connection.send(new Gson().toJson(message));
+        }
+    }
     private void broadcastToSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
         Connection connection = gameConnections.get(gameID).get(authToken);
         if (connection.session.isOpen()) {
