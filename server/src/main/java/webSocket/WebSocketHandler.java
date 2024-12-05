@@ -46,6 +46,7 @@ public class WebSocketHandler {
                 case CONNECT -> joinGame(command.getAuthToken(), command.getGameID(), session);
                 case LEAVE -> leaveGame(command.getAuthToken(), command.getGameID());
                 case MAKE_MOVE -> makeMove(command.getAuthToken(), command.getGameID(), message);
+                case RESIGN -> resign(command.getAuthToken(), command.getGameID());
             }
         }catch (DataAccessException e) {
             session.getRemote().sendString("Unable to connect");
@@ -126,6 +127,26 @@ public class WebSocketHandler {
 
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
+
+        if (game.isGameFinished()) {
+            String errorMessage = "Error: the game is already over";
+            sendErrorMessage(errorMessage, authToken, gameID);
+            return;
+        }
+
+        String username = authData.username();
+        ChessGame.TeamColor color = null;
+        if (gameData.blackUsername().equals(username)) {
+            color = ChessGame.TeamColor.BLACK;
+        } else if(gameData.whiteUsername().equals(username)) {
+            color = ChessGame.TeamColor.WHITE;
+        }
+        ChessGame.TeamColor teamColorBeingMoved = game.getBoard().getPiece(chessMove.getStartPosition()).getTeamColor();
+        if (teamColorBeingMoved != color) {
+            String errorMessage = "Error: it is not your turn";
+            sendErrorMessage(errorMessage, authToken, gameID);
+            return;
+        }
         try {
             game.makeMove(chessMove);
         } catch (InvalidMoveException e) {
@@ -146,6 +167,33 @@ public class WebSocketHandler {
         serverNotification.addMessage(String.format("%s has moved %s to %s", authData.username(),
                 chessMove.getStartPosition().toString(), chessMove.getEndPosition().toString()));
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, serverNotification, gameID);
+    }
+
+    public void resign(String authToken, int gameID) throws IOException, DataAccessException {
+        if (verifyData(authToken, gameID)) {
+            return;
+        }
+        AuthData authData = authDAO.getAuthData(authToken);
+        GameData gameData = gameDAO.getGame(gameID);
+        ChessGame game = gameData.game();
+
+        if (game.isGameFinished()) {
+            String errorMessage = "Error: the game is already over";
+            sendErrorMessage(errorMessage, authToken, gameID);
+            return;
+        }
+
+        String username = authData.username();
+        if (!(gameData.blackUsername().equals(username) || gameData.whiteUsername().equals(username))) {
+            String message = "Error: you cannot resign if you are not playing";
+            sendErrorMessage(message, authToken, gameID);
+        }
+
+        ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
+        notification.addMessage(String.format("%s has resigned", username));
+        connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.EVERYONE, notification, gameID);
+
+        game.setGameFinished(true);
     }
 
     //returns true if the data threw an error, and false otherwise
