@@ -204,9 +204,18 @@ public class ChessClient {
         return new ChessBoardArtist().highlightBoard(game, color, position);
     }
 
-    private ChessPosition convertToChessPosition(String input) {
-        //TODO: actually convert it
-        return new ChessPosition(2, 6);
+    private ChessPosition convertToChessPosition(String input) throws ResponseException {
+        if (input.length() != 2) {
+            throw new ResponseException(400, "please format your move like the following: highlight 2D");
+        }
+        //This will cast the characters given to be a number
+        int row = input.charAt(0) - '0';
+        int col = input.charAt(1) - 'a' + 1;
+
+        if (row < 1 || row > 8 || col < 1 || col > 8) {
+            throw new ResponseException(400, "please format your move like the following: highlight 2D");
+        }
+        return new ChessPosition(row, col);
     }
 
     public String help() throws ResponseException {
