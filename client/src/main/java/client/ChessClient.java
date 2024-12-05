@@ -1,6 +1,5 @@
 package client;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import exceptions.ResponseException;
 import model.AuthData;
@@ -24,7 +23,8 @@ public class ChessClient {
     private WebSocketFacade webSocket;
     private UserStatus status = UserStatus.SIGNED_OUT;
     private String authToken = null;
-    ChessGame game;
+    private ChessGame game;
+    private ChessGame.TeamColor color = null;
 
 
     public ChessClient(String serverUrl) {
@@ -50,7 +50,8 @@ public class ChessClient {
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
                 case "observe" -> observeGame(params);
-                case "leave" -> leaveGame(params);
+                case "leave" -> leaveGame();
+                case "redraw" -> redrawBoard();
                 default -> help();
             };
         } catch (Exception ex) {
@@ -146,17 +147,17 @@ public class ChessClient {
             throw new ResponseException(400, "You are not signed in or are already in a game");
         }
         if (params.length >= 2) {
-            ChessGame.TeamColor playerColor = switch (params[0].toLowerCase()) {
+            color = switch (params[0].toLowerCase()) {
                 case "black" -> ChessGame.TeamColor.BLACK;
                 case "white" -> ChessGame.TeamColor.WHITE;
                 default -> throw new ResponseException(400, "team color must be black or white");
             };
             int gameID = getGameIDToInt(params[1]);
-            server.joinGame(new JoinGameRequest(playerColor, gameID), authToken);
+            server.joinGame(new JoinGameRequest(color, gameID), authToken);
             status = UserStatus.PLAYING_GAME;
             webSocket = new WebSocketFacade(url, this);
-            webSocket.joinGame(gameID, authToken, playerColor);
-            return "Successfully joined game as " + playerColor;
+            webSocket.joinGame(gameID, authToken, color);
+            return "Successfully joined game as " + color;
         }
         throw new ResponseException(400, "Expected: <black|white> <Game ID>");
     }
@@ -175,13 +176,20 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <gameID>");
     }
 
-    public String leaveGame(String... params) throws Exception {
+    public String leaveGame() throws Exception {
         if (status != UserStatus.PLAYING_GAME && status != UserStatus.OBSERVING_GAME) {
             throw new ResponseException(400, "You cannot leave a game you are not playing or observing");
         }
         webSocket.leaveGame(authToken);
         status = UserStatus.SIGNED_IN;
         return "You have left the game";
+    }
+
+    public String redrawBoard() throws ResponseException {
+        if (status == UserStatus.PLAYING_GAME || status == UserStatus.OBSERVING_GAME) {
+            return new ChessBoardArtist().drawBoard(game.getBoard(), color);
+        }
+        throw new ResponseException(400, "You must be in a game to redraw the board");
     }
 
     public String help() throws ResponseException {

@@ -37,19 +37,16 @@ public class WebSocketFacade extends Endpoint {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
 
-            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
-                public void onMessage(String message) {
-                    var receivedMessage = new Gson().fromJson(message, ServerMessage.class);
-                    String result = switch (receivedMessage.getServerMessageType()) {
-                        case LOAD_GAME -> receiveLoadGame(message);
-                        case NOTIFICATION -> receiveNotification(message);
-                        case ERROR -> receiveErrorMessage(message);
-                        default -> "wrong";
-                    };
-                    System.out.print("\n" + EscapeSequences.SET_TEXT_COLOR_BLUE + result + "\n" +
-                            EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + ">>> " + EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
-                    System.out.flush();
-                }
+            this.session.addMessageHandler((MessageHandler.Whole<String>) message -> {
+                var receivedMessage = new Gson().fromJson(message, ServerMessage.class);
+                String result = switch (receivedMessage.getServerMessageType()) {
+                    case ServerMessage.ServerMessageType.LOAD_GAME -> receiveLoadGame(message);
+                    case ServerMessage.ServerMessageType.NOTIFICATION -> receiveNotification(message);
+                    case ServerMessage.ServerMessageType.ERROR -> receiveErrorMessage(message);
+                };
+                System.out.print("\n" + EscapeSequences.SET_TEXT_COLOR_BLUE + result + "\n" +
+                        EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + ">>> " + EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
+                System.out.flush();
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new ResponseException(500, ex.getMessage());
