@@ -232,7 +232,7 @@ public class ChessClient {
         }
 
         webSocket.makeMove(authToken, move);
-        return "your have moved your piece"; //TODO: specify the move
+        return "your have moved " + startPosition + " to " + endPosition;
     }
 
     private ChessPosition convertToChessPosition(String input) throws ResponseException {

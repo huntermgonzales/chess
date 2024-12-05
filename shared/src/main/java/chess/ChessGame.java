@@ -14,6 +14,7 @@ import java.util.Objects;
 public class ChessGame {
     ChessBoard board;
     TeamColor teamTurn = TeamColor.WHITE;
+    boolean gameFinished = false;
 
     public ChessGame() {
         board = new ChessBoard();
@@ -61,7 +62,13 @@ public class ChessGame {
         BLACK
     }
 
+    public boolean isGameFinished() {
+        return gameFinished;
+    }
 
+    public void setGameFinished(boolean gameFinished) {
+        this.gameFinished = gameFinished;
+    }
 
     //This function will tell you if a certain move is possible or not depending on check
     private boolean checkMove(ChessMove move) {
@@ -160,6 +167,7 @@ public class ChessGame {
                 return false;
             }
         }
+        gameFinished = true;
         return true;
     }
 
@@ -185,6 +193,7 @@ public class ChessGame {
                 return false;
             }
         }
+        gameFinished = true;
         return true;
     }
 

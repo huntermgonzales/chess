@@ -37,7 +37,9 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        return "{" + row + ", " + col + "}";
+        // Convert the column (1-8) back to a letter (a-h)
+        char columnChar = (char) ('a' + col - 1);
+        return row + String.valueOf(columnChar).toUpperCase();
     }
 
     /**

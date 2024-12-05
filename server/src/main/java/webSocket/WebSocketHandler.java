@@ -142,8 +142,9 @@ public class WebSocketHandler {
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.EVERYONE, loadGameMessage, gameID);
 
         ServerNotification serverNotification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
-        //TODO: actually describe the move
-        serverNotification.addMessage(String.format("%s has moved the piece", authData.username()));
+
+        serverNotification.addMessage(String.format("%s has moved %s to %s", authData.username(),
+                chessMove.getStartPosition().toString(), chessMove.getEndPosition().toString()));
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, serverNotification, gameID);
     }
 
