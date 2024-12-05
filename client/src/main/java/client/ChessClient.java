@@ -1,6 +1,7 @@
 package client;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 import exceptions.ResponseException;
 import model.AuthData;
 import model.GameData;
@@ -52,6 +53,7 @@ public class ChessClient {
                 case "observe" -> observeGame(params);
                 case "leave" -> leaveGame();
                 case "redraw" -> redrawBoard();
+                case "highlight" -> highlightPossibleMoves(params);
                 default -> help();
             };
         } catch (Exception ex) {
@@ -190,6 +192,21 @@ public class ChessClient {
             return new ChessBoardArtist().drawBoard(game.getBoard(), color);
         }
         throw new ResponseException(400, "You must be in a game to redraw the board");
+    }
+
+    public String highlightPossibleMoves(String... params) throws ResponseException {
+        if (params.length != 1) {
+            throw new ResponseException(400, "please format your move without spaces. ie: highlight 2D");
+        }else if (status != UserStatus.PLAYING_GAME && status != UserStatus.OBSERVING_GAME) {
+            throw new ResponseException(400, "You must be playing or observing a game to highlight moves");
+        }
+        ChessPosition position = convertToChessPosition(params[0]);
+        return new ChessBoardArtist().highlightBoard(game, color, position);
+    }
+
+    private ChessPosition convertToChessPosition(String input) {
+        //TODO: actually convert it
+        return new ChessPosition(2, 6);
     }
 
     public String help() throws ResponseException {
