@@ -48,7 +48,7 @@ public class ConnectionManager {
     private void broadcastToEveryone(ServerMessage message, int gameID) throws IOException {
         ConcurrentHashMap<String, Connection> connections = gameConnections.get(gameID);
         for (Connection connection : connections.values()) {
-            if (connection.session.isOpen()) {
+            if (connection != null && connection.session.isOpen()) {
                 connection.send(new Gson().toJson(message));
             }else {
                 connections.remove(connection.authToken);
@@ -57,7 +57,12 @@ public class ConnectionManager {
     }
     private void broadcastToSelf(String authToken, ServerMessage message, Integer gameID) throws IOException {
         Connection connection = gameConnections.get(gameID).get(authToken);
-        if (connection.session.isOpen()) {
+
+        //TODO: if a bad auth token is given, create the connection then send, then delete
+        if (connection == null) {
+
+        }
+        if (connection!= null && connection.session.isOpen()) {
             connection.send(new Gson().toJson(message));
         } else {
             gameConnections.get(gameID).remove(authToken);

@@ -44,9 +44,9 @@ public class WebSocketHandler {
         try {
             switch (command.getCommandType()) {
                 case CONNECT -> joinGame(command.getAuthToken(), command.getGameID(), session);
-                case LEAVE -> leaveGame(command.getAuthToken(), command.getGameID());
-                case MAKE_MOVE -> makeMove(command.getAuthToken(), command.getGameID(), message);
-                case RESIGN -> resign(command.getAuthToken(), command.getGameID());
+                case LEAVE -> leaveGame(command.getAuthToken(), command.getGameID(), session);
+                case MAKE_MOVE -> makeMove(command.getAuthToken(), command.getGameID(), message, session);
+                case RESIGN -> resign(command.getAuthToken(), command.getGameID(), session);
             }
         }catch (DataAccessException e) {
             session.getRemote().sendString("Unable to connect");
@@ -55,21 +55,8 @@ public class WebSocketHandler {
 
 
     private void joinGame(String authToken, int gameID, Session session) throws DataAccessException, IOException {
+        verifyData(authToken, gameID, session);
         connections.add(authToken, gameID, session);
-
-        //checks if the authToken is valid
-        if (authDAO.getAuthData(authToken) == null) {
-            String message = "Error: you do not have permission to do this";
-            sendErrorMessage(message, authToken, gameID);
-            return;
-        }
-
-        //checks if gameID is valid
-        if (gameDAO.getGame(gameID) == null) {
-            String message = "Error: invalid game ID";
-            sendErrorMessage(message, authToken, gameID);
-            return;
-        }
 
         //Load Game notification
         LoadGameMessage message = new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME);
@@ -99,8 +86,8 @@ public class WebSocketHandler {
         return notification;
     }
 
-    private void leaveGame(String authToken, int gameID) throws DataAccessException, IOException {
-        if (verifyData(authToken, gameID)) {
+    private void leaveGame(String authToken, int gameID, Session session) throws DataAccessException, IOException {
+        if (verifyData(authToken, gameID, session)) {
             return;
         }
 
@@ -117,8 +104,8 @@ public class WebSocketHandler {
         connections.remove(authToken, gameID);
     }
 
-    private void makeMove(String authToken, int gameID, String message) throws IOException, DataAccessException {
-        if (verifyData(authToken, gameID)) {
+    private void makeMove(String authToken, int gameID, String message, Session session) throws IOException, DataAccessException {
+        if (verifyData(authToken, gameID, session)) {
             return;
         }
         MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
@@ -169,8 +156,8 @@ public class WebSocketHandler {
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.ALL_BUT_SELF, serverNotification, gameID);
     }
 
-    public void resign(String authToken, int gameID) throws IOException, DataAccessException {
-        if (verifyData(authToken, gameID)) {
+    public void resign(String authToken, int gameID, Session session) throws IOException, DataAccessException {
+        if (verifyData(authToken, gameID, session)) {
             return;
         }
         AuthData authData = authDAO.getAuthData(authToken);
@@ -197,21 +184,27 @@ public class WebSocketHandler {
     }
 
     //returns true if the data threw an error, and false otherwise
-    private boolean verifyData(String authToken, int gameID) throws IOException, DataAccessException {
-        //checks if the authToken is valid
-        AuthData authData = authDAO.getAuthData(authToken);
-        if (authData == null) {
-            String message = "Error: you do not have permission to do this";
+    private boolean verifyData(String authToken, int gameID, Session session) throws IOException, DataAccessException {
+        //checks if gameID is valid
+        if (gameDAO.getGame(gameID) == null) {
+            connections.add(authToken, gameID, session);
+            String message = "Error: invalid game ID";
             sendErrorMessage(message, authToken, gameID);
+            connections.remove(authToken, gameID);
             return true;
         }
 
-        //checks if gameID is valid
-        if (gameDAO.getGame(gameID) == null) {
-            String message = "Error: invalid game ID";
+        //checks if the authToken is valid
+        AuthData authData = authDAO.getAuthData(authToken);
+        if (authData == null) {
+            connections.add(authToken, gameID, session);
+            String message = "Error: you do not have permission to do this";
             sendErrorMessage(message, authToken, gameID);
+            connections.remove(authToken, gameID);
             return true;
         }
+
+
         return false;
     }
 
@@ -232,7 +225,6 @@ public class WebSocketHandler {
         ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR);
         errorMessage.setErrorMessage(message);
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.SELF, errorMessage, gameID);
-        connections.remove(authToken, gameID);
     }
 
 }
