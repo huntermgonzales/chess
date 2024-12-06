@@ -5,7 +5,7 @@ import dataaccess.MySQLAccess;
 import exceptions.DataAccessException;
 import handler.*;
 import spark.*;
-import webSocket.WebSocketHandler;
+import websocket.WebSocketHandler;
 
 public class Server {
 
@@ -16,6 +16,12 @@ public class Server {
     }
     public int run(int desiredPort) {
         Spark.port(desiredPort);
+        DataaccessConfig.initialize(true);
+        try {
+            new MySQLAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         if (!DataaccessConfig.isInitialized()) {
             DataaccessConfig.initialize(true);
             try {

@@ -292,7 +292,9 @@ public class ChessClient {
                     To make a move:             "move" <start position> <end position>
                     
                     Note: The positions should be input as number then letter.
-                    For example you can type "move 2D 4D" to move the white pawn
+                    For example you can type "move 2D 4D" to move the white pawn.
+                    Additionally, if you are promoting your pawn, specify what type
+                    you want the pawn to become so you can type "move 7e 8e queen"
                     """;
         } else if (status == UserStatus.OBSERVING_GAME) {
             return """

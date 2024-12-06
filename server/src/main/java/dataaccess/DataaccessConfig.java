@@ -19,7 +19,9 @@ public class DataaccessConfig {
     }
 
     public static void initialize(boolean useSQLMemory) {
-        instance = new DataaccessConfig(useSQLMemory);
+        if (!isInitialized()) {
+            instance = new DataaccessConfig(useSQLMemory);
+        }
     }
 
     public static DataaccessConfig getInstance() {

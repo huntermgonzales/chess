@@ -1,6 +1,5 @@
-package webSocket;
+package websocket;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.InvalidMoveException;
@@ -9,7 +8,6 @@ import dataaccess.AuthDAO;
 import dataaccess.DataaccessConfig;
 import dataaccess.GameDAO;
 import exceptions.DataAccessException;
-import exceptions.UnauthorizedException;
 import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
