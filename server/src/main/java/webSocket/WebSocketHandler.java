@@ -174,6 +174,7 @@ public class WebSocketHandler {
         if (!(gameData.blackUsername().equals(username) || gameData.whiteUsername().equals(username))) {
             String message = "Error: you cannot resign if you are not playing";
             sendErrorMessage(message, authToken, gameID);
+            return;
         }
 
         ServerNotification notification = new ServerNotification(ServerMessage.ServerMessageType.NOTIFICATION);
@@ -181,6 +182,9 @@ public class WebSocketHandler {
         connections.broadcast(authToken, ConnectionManager.BroadcastReceivers.EVERYONE, notification, gameID);
 
         game.setGameFinished(true);
+        GameData updatedGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(),
+                gameData.gameName(), game);
+        gameDAO.updateGameData(updatedGameData);
     }
 
     //returns true if the data threw an error, and false otherwise
