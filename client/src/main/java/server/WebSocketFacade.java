@@ -91,8 +91,14 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void makeMove(String authToken, ChessMove move) throws Exception {
+
         var command = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID);
         command.setChessMove(move);
+        send(new Gson().toJson(command));
+    }
+
+    public void resign(String authToken) throws Exception {
+        var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         send(new Gson().toJson(command));
     }
 }

@@ -15,6 +15,7 @@ import ui.ChessBoardArtist;
 import ui.UserStatus;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class ChessClient {
@@ -54,6 +55,7 @@ public class ChessClient {
                 case "redraw" -> redrawBoard();
                 case "highlight" -> highlightPossibleMoves(params);
                 case "move" -> makeMove(params);
+                case "resign" -> resign();
                 default -> help();
             };
         } catch (Exception ex) {
@@ -231,6 +233,11 @@ public class ChessClient {
             throw new ResponseException(400, "invalid move");
         }
 
+        Collection<ChessMove> possibleMoves = game.validMoves(move.getStartPosition());
+        if (!possibleMoves.contains(move)) {
+            throw new ResponseException(400, "invalid move");
+        }
+
         webSocket.makeMove(authToken, move);
         return "your have moved " + startPosition + " to " + endPosition;
     }
@@ -247,6 +254,14 @@ public class ChessClient {
             throw new ResponseException(400, "please format your move like the following: highlight 2D");
         }
         return new ChessPosition(row, col);
+    }
+
+    public String resign() throws Exception {
+        if (status != UserStatus.PLAYING_GAME) {
+            throw new ResponseException(400, "you can only resign if you are playing a game");
+        }
+        webSocket.resign(authToken);
+        return "";
     }
 
 
